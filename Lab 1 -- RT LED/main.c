@@ -8,7 +8,7 @@
 
 volatile uint8_t led_state = 0;
 
-void checkButton() {
+void checkButton(void *pvParameters) {
 	static uint8_t last_state = 1;
 	while(1) {
 		uint8_t button_state = digitalRead(GPIOC, BUTTON);
@@ -20,7 +20,7 @@ void checkButton() {
 	}
 }
 
-void controlLED() {
+void controlLED(void *pvParameters) {
 	while(1) {
 		digitalWrite(GPIOA, LED, led_state);
 		vTaskDelay(10);
@@ -33,9 +33,14 @@ int main() {
 	
 	pinMode(GPIOA, LED, OUTPUT);
 	
-	xTaskCreate(checkButton, "checkButton", 128, NULL, 1, NULL);
-	xTaskCreate(controlLED, "controlLED", 128, NULL, 1, NULL);
-
+	BaseType_t t1 = xTaskCreate(checkButton, "checkButton", 128, NULL, 1, NULL);
+	if (t1 != pdPASS) {
+		while(1);
+	}
+	BaseType_t t2 = xTaskCreate(controlLED, "controlLED", 128, NULL, 1, NULL);
+	if (t2 != pdPASS) {
+		while(1);
+	}
 	vTaskStartScheduler();
 	while(1);
 }
