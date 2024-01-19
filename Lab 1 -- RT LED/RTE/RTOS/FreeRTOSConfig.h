@@ -104,7 +104,7 @@
 //  <i> Enable or disable stack overflow checking.
 //  <i> Callback function vApplicationStackOverflowHook implementation is required when stack checking is enabled.
 //  <i> Default: 0
-#define configCHECK_FOR_STACK_OVERFLOW          2
+#define configCHECK_FOR_STACK_OVERFLOW          0
 
 //  <q>Use idle hook
 //  <i> Enable callback function call on each idle task iteration.
@@ -232,7 +232,7 @@
 
 /* Defines needed by FreeRTOS to implement CMSIS RTOS2 API. Do not change! */
 #define configCPU_CLOCK_HZ                      (SystemCoreClock)
-#define configSUPPORT_STATIC_ALLOCATION         1
+#define configSUPPORT_STATIC_ALLOCATION         0
 #define configSUPPORT_DYNAMIC_ALLOCATION        1
 #define configUSE_PREEMPTION                    1
 #define configUSE_TIMERS                        1
