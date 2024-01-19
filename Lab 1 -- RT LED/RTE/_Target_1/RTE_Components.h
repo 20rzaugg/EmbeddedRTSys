@@ -20,6 +20,8 @@
 #define RTE_RTOS_FreeRTOS_CONFIG        /* RTOS FreeRTOS Config for FreeRTOS API */
 /* ARM.FreeRTOS::RTOS:Core:Cortex-M:10.5.1 */
 #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
+/* ARM.FreeRTOS::RTOS:Event Groups:10.5.1 */
+#define RTE_RTOS_FreeRTOS_EVENTGROUPS   /* RTOS FreeRTOS Event Groups */
 /* ARM.FreeRTOS::RTOS:Heap:Heap_4:10.5.1 */
 #define RTE_RTOS_FreeRTOS_HEAP_4        /* RTOS FreeRTOS Heap 4 */
 /* ARM.FreeRTOS::RTOS:Timers:10.5.1 */
