@@ -1,22 +1,21 @@
 #include "gpio.h"
 
 void pinMode(GPIO_TypeDef *port, unsigned int pin, unsigned int mode) {
-  //enable appropriate GPIO clock for the pin we're setting up  
-	if (port == GPIOA)
-		{
-			RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-		}
-		else if (port == GPIOB) {
-			RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
-		}
-		else if (port == GPIOC) {
-			RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
-		}
-		else {
-			//if not gpio A, B, or C, return. No need to finish function
-			return;
-		}
-		port->MODER = (port->MODER & ~(0x3u << (pin * 2))) | (mode << (pin * 2));
+	//enable appropriate GPIO clock for the pin we're setting up  
+	if (port == GPIOA) {
+		RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+	}
+	else if (port == GPIOB) {
+		RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+	}
+	else if (port == GPIOC) {
+		RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
+	}
+	else {
+		//if not gpio A, B, or C, return. No need to finish function
+		return;
+	}
+	port->MODER = (port->MODER & ~(0x3u << (pin * 2))) | (mode << (pin * 2));
 }
 
 void setOutputType(GPIO_TypeDef *port, unsigned int pin, unsigned int type) {

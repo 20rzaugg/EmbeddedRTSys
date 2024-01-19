@@ -1,0 +1,581 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.38.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Ryan Zaugg, Utah State University, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.38.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.19
+Assembler:       Armasm.exe V6.19
+Linker/Locator:  ArmLink.exe V6.19
+Library Manager: ArmAr.exe V6.19
+Hex Converter:   FromElf.exe V6.19
+CPU DLL:         SARMCM3.DLL V5.38.0.0
+Dialog DLL:      DCM.DLL V1.17.5.0
+Target DLL:      UL2CM3.DLL V1.164.8.0
+Dialog DLL:      TCM.DLL V1.56.4.0
+ 
+<h2>Project:</h2>
+G:\My Drive\College\8_Spring2024\Embedded RT Systems\EmbeddedRTSys\Lab 1 -- RT LED\RTLED_lab1.uvprojx
+Project File Date:  01/18/2024
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.19', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
+Build target 'Target 1'
+RTE/Device/STM32L476RGTx/system_stm32l4xx.c(92): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(11): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *              - To use or not the peripheral<92>s drivers in application code(i.e.
+                                               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(12): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *                code will be based on direct access to peripheral<92>s registers
+                                                                    ^
+RTE/Device/STM32L476RGTx/system_stm32l4xx.c(92): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(150): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h(10): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *           - Macros to access peripheral<92>s registers hardware
+                                           ^
+3 warnings generated.
+compiling system_stm32l4xx.c...
+assembling startup_stm32l476xx.s...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/portable/MemMang/heap_4.c(45): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(11): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *              - To use or not the peripheral<92>s drivers in application code(i.e.
+                                               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(12): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *                code will be based on direct access to peripheral<92>s registers
+                                                                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/portable/MemMang/heap_4.c(45): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(150): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h(10): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *           - Macros to access peripheral<92>s registers hardware
+                                           ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/portable/MemMang/heap_4.c(414): warning: cast from 'uint8_t *' (aka 'unsigned char *') to 'BlockLink_t *' (aka 'struct A_BLOCK_LINK *') increases required alignment from 1 to 4 [-Wcast-align]
+    pxFirstFreeBlock = ( BlockLink_t * ) pucAlignedHeap;
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4 warnings generated.
+compiling heap_4.c...
+gpio.c(1): warning: In file included from...
+./gpio.h(1): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l476xx.h(10): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *           - Macros to access peripheral<92>s registers hardware
+                                           ^
+1 warning generated.
+compiling gpio.c...
+main.c(1): warning: In file included from...
+./gpio.h(1): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l476xx.h(10): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *           - Macros to access peripheral<92>s registers hardware
+                                           ^
+main.c(2): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(34): error: "include FreeRTOS.h must appear in source files before include task.h"
+    #error "include FreeRTOS.h must appear in source files before include task.h"
+     ^
+main.c(2): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(62): error: "FreeRTOS.h must be included before list.h"
+    #error "FreeRTOS.h must be included before list.h"
+     ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(108): warning: 'configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES' is not defined, evaluates to 0 [-Wundef]
+#if ( configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES == 0 )
+      ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(147): error: unknown type name 'TickType_t'
+    configLIST_VOLATILE TickType_t xItemValue;          /*< The value being listed.  In most cases this is used to sort the list in ascending order. */
+                        ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(156): warning: 'configUSE_MINI_LIST_ITEM' is not defined, evaluates to 0 [-Wundef]
+#if ( configUSE_MINI_LIST_ITEM == 1 )
+      ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(175): error: unknown type name 'UBaseType_t'
+    volatile UBaseType_t uxNumberOfItems;
+             ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(433): error: expected function body after function declarator
+void vListInitialise( List_t * const pxList ) PRIVILEGED_FUNCTION;
+                                              ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(444): error: expected function body after function declarator
+void vListInitialiseItem( ListItem_t * const pxItem ) PRIVILEGED_FUNCTION;
+                                                      ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(458): error: expected function body after function declarator
+                  ListItem_t * const pxNewListItem ) PRIVILEGED_FUNCTION;
+                                                     ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(480): error: expected function body after function declarator
+                     ListItem_t * const pxNewListItem ) PRIVILEGED_FUNCTION;
+                                                        ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(495): error: unknown type name 'UBaseType_t'
+UBaseType_t uxListRemove( ListItem_t * const pxItemToRemove ) PRIVILEGED_FUNCTION;
+^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/list.h(495): error: expected function body after function declarator
+UBaseType_t uxListRemove( ListItem_t * const pxItemToRemove ) PRIVILEGED_FUNCTION;
+                                                              ^
+main.c(2): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(93): error: type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+typedef BaseType_t (* TaskHookFunction_t)( void * );
+                      ^
+                    int
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(93): error: type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+typedef BaseType_t (* TaskHookFunction_t)( void * );
+~~~~~~~ ^
+int
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(93): error: function cannot return function type 'int (void *)'
+typedef BaseType_t (* TaskHookFunction_t)( void * );
+                   ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(122): error: unknown type name 'TickType_t'
+    TickType_t xTimeOnEntering;
+    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(121): error: field 'xOverflowCount' declared as a function
+    BaseType_t xOverflowCount;
+               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(140): error: unknown type name 'TaskFunction_t'
+    TaskFunction_t pvTaskCode;
+    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(142): error: unknown type name 'configSTACK_DEPTH_TYPE'
+    configSTACK_DEPTH_TYPE usStackDepth;
+    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(144): error: unknown type name 'UBaseType_t'
+    UBaseType_t uxPriority;
+    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\task.h(145): error: unknown type name 'StackType_t'
+    StackType_t * puxStackBuffer;
+    ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+3 warnings and 20 errors generated.
+compiling main.c...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/portable/GCC/ARM_CM4F/port.c(34): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(11): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *              - To use or not the peripheral<92>s drivers in application code(i.e.
+                                               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(12): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *                code will be based on direct access to peripheral<92>s registers
+                                                                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/portable/GCC/ARM_CM4F/port.c(34): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(150): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h(10): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *           - Macros to access peripheral<92>s registers hardware
+                                           ^
+3 warnings generated.
+compiling port.c...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/list.c(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(11): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *              - To use or not the peripheral<92>s drivers in application code(i.e.
+                                               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(12): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *                code will be based on direct access to peripheral<92>s registers
+                                                                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/list.c(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(150): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h(10): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *           - Macros to access peripheral<92>s registers hardware
+                                           ^
+3 warnings generated.
+compiling list.c...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/timers.c(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(11): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *              - To use or not the peripheral<92>s drivers in application code(i.e.
+                                               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(12): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *                code will be based on direct access to peripheral<92>s registers
+                                                                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/timers.c(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(150): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h(10): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *           - Macros to access peripheral<92>s registers hardware
+                                           ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/timers.c(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(1256): warning: padding size of 'struct xSTATIC_TCB' with 2 bytes to alignment boundary [-Wpadded]
+typedef struct xSTATIC_TCB
+               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/timers.c(75): warning: padding size of 'struct tmrTimerControl' with 3 bytes to alignment boundary [-Wpadded]
+    typedef struct tmrTimerControl                  /* The old naming convention is used to prevent breaking kernel aware debuggers. */
+                   ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/timers.c(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(1391): warning: padding size of 'struct xSTATIC_TIMER' with 3 bytes to alignment boundary [-Wpadded]
+typedef struct xSTATIC_TIMER
+               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/timers.c(569): warning: function 'prvTimerTask' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+    {
+    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/timers.c(650): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                        portYIELD_WITHIN_API();
+                                              ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/timers.c(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(1343): warning: padding struct 'struct xSTATIC_QUEUE' with 1 byte to align 'uxDummy8' [-Wpadded]
+        UBaseType_t uxDummy8;
+                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(1320): warning: padding size of 'struct xSTATIC_QUEUE' with 3 bytes to alignment boundary [-Wpadded]
+typedef struct xSTATIC_QUEUE
+               ^
+10 warnings generated.
+compiling timers.c...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c(23): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(11): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *              - To use or not the peripheral<92>s drivers in application code(i.e.
+                                               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(12): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *                code will be based on direct access to peripheral<92>s registers
+                                                                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c(23): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(150): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h(10): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *           - Macros to access peripheral<92>s registers hardware
+                                           ^
+3 warnings generated.
+compiling freertos_evr.c...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(11): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *              - To use or not the peripheral<92>s drivers in application code(i.e.
+                                               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(12): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *                code will be based on direct access to peripheral<92>s registers
+                                                                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(150): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h(10): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *           - Macros to access peripheral<92>s registers hardware
+                                           ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(329): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                        queueYIELD_IF_USING_PREEMPTION();
+                                                        ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(130): warning: padding struct 'struct QueueDefinition' with 1 byte to align 'uxQueueNumber' [-Wpadded]
+        UBaseType_t uxQueueNumber;
+                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(100): warning: padding size of 'struct QueueDefinition' with 3 bytes to alignment boundary [-Wpadded]
+typedef struct QueueDefinition /* The old naming convention is used to prevent breaking kernel aware debuggers. */
+               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(37): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(1343): warning: padding struct 'struct xSTATIC_QUEUE' with 1 byte to align 'uxDummy8' [-Wpadded]
+        UBaseType_t uxDummy8;
+                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(1320): warning: padding size of 'struct xSTATIC_QUEUE' with 3 bytes to alignment boundary [-Wpadded]
+typedef struct xSTATIC_QUEUE
+               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(942): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                            queueYIELD_IF_USING_PREEMPTION();
+                                                            ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(955): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                        queueYIELD_IF_USING_PREEMPTION();
+                                                        ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(1024): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    portYIELD_WITHIN_API();
+                                          ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(1195): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                prvIncrementQueueTxLock( pxQueue, cTxLock );
+                                                           ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(1361): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                prvIncrementQueueTxLock( pxQueue, cTxLock );
+                                                           ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(1425): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                        queueYIELD_IF_USING_PREEMPTION();
+                                                        ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(1485): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    portYIELD_WITHIN_API();
+                                          ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(1588): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                        queueYIELD_IF_USING_PREEMPTION();
+                                                        ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(1668): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    portYIELD_WITHIN_API();
+                                          ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(1785): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                        queueYIELD_IF_USING_PREEMPTION();
+                                                        ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(1846): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    portYIELD_WITHIN_API();
+                                          ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/queue.c(1958): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                prvIncrementQueueRxLock( pxQueue, cRxLock );
+                                                           ^
+20 warnings generated.
+compiling queue.c...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(39): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(11): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *              - To use or not the peripheral<92>s drivers in application code(i.e.
+                                               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(12): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *                code will be based on direct access to peripheral<92>s registers
+                                                                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(39): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(59): warning: In file included from...
+./RTE/RTOS\FreeRTOSConfig.h(46): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include\stm32l4xx.h(150): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h(10): warning: invalid UTF-8 in comment [-Winvalid-utf8]
+  *           - Macros to access peripheral<92>s registers hardware
+                                           ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(329): warning: no previous extern declaration for non-static variable 'pxCurrentTCB' [-Wmissing-variable-declarations]
+portDONT_DISCARD PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
+                                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(329): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+portDONT_DISCARD PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
+                                 ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(255): warning: padding size of 'struct tskTaskControlBlock' with 2 bytes to alignment boundary [-Wpadded]
+typedef struct tskTaskControlBlock       /* The old naming convention is used to prevent breaking kernel aware debuggers. */
+               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(376): warning: no previous extern declaration for non-static variable 'uxTopUsedPriority' [-Wmissing-variable-declarations]
+const volatile UBaseType_t uxTopUsedPriority = configMAX_PRIORITIES - 1U;
+                           ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(376): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+const volatile UBaseType_t uxTopUsedPriority = configMAX_PRIORITIES - 1U;
+               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(39): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include\FreeRTOS.h(1256): warning: padding size of 'struct xSTATIC_TCB' with 2 bytes to alignment boundary [-Wpadded]
+typedef struct xSTATIC_TCB
+               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1084): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+        prvAddTaskToReadyList( pxNewTCB );
+                                         ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1096): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+            taskYIELD_IF_USING_PREEMPTION();
+                                           ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1200): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                portYIELD_WITHIN_API();
+                                      ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1286): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+            portYIELD_WITHIN_API();
+                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1333): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+            portYIELD_WITHIN_API();
+                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1644): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    prvAddTaskToReadyList( pxTCB );
+                                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1653): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    taskYIELD_IF_USING_PREEMPTION();
+                                                   ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1747): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                portYIELD_WITHIN_API();
+                                      ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1845): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    prvAddTaskToReadyList( pxTCB );
+                                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1853): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                        taskYIELD_IF_USING_PREEMPTION();
+                                                       ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(1931): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    prvAddTaskToReadyList( pxTCB );
+                                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(2201): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    listREMOVE_ITEM( &( pxTCB->xEventListItem ) );
+                                                                 ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(2203): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    listREMOVE_ITEM( &( pxTCB->xStateListItem ) );
+                                                                 ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(2204): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    prvAddTaskToReadyList( pxTCB );
+                                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(2267): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    taskYIELD_IF_USING_PREEMPTION();
+                                                   ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(40): warning: In file included from...
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/task.h(160): warning: padding struct 'struct xTASK_STATUS' with 3 bytes to align 'uxCurrentPriority' [-Wpadded]
+    UBaseType_t uxCurrentPriority;                /* The priority at which the task was running (may be inherited) when the structure was populated. */
+                ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include/task.h(154): warning: padding size of 'struct xTASK_STATUS' with 2 bytes to alignment boundary [-Wpadded]
+typedef struct xTASK_STATUS
+               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(2743): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+            taskSWITCH_DELAYED_LISTS();
+                                      ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(2793): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    listREMOVE_ITEM( &( pxTCB->xStateListItem ) );
+                                                                 ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(2799): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                        listREMOVE_ITEM( &( pxTCB->xEventListItem ) );
+                                                                     ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(2808): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    prvAddTaskToReadyList( pxTCB );
+                                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3051): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+        taskCHECK_FOR_STACK_OVERFLOW();
+                                      ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3062): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+        taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+                                          ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3128): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+    listINSERT_END( pxEventList, &( pxCurrentTCB->xEventListItem ) );
+                                                                    ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3152): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+        listINSERT_END( pxEventList, &( pxCurrentTCB->xEventListItem ) );
+                                                                        ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3189): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+    listREMOVE_ITEM( &( pxUnblockedTCB->xEventListItem ) );
+                                                          ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3193): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+        listREMOVE_ITEM( &( pxUnblockedTCB->xStateListItem ) );
+                                                              ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3194): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+        prvAddTaskToReadyList( pxUnblockedTCB );
+                                               ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3214): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+        listINSERT_END( &( xPendingReadyList ), &( pxUnblockedTCB->xEventListItem ) );
+                                                                                     ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3253): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+    listREMOVE_ITEM( pxEventListItem );
+                                      ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3272): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+    listREMOVE_ITEM( &( pxUnblockedTCB->xStateListItem ) );
+                                                          ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3273): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+    prvAddTaskToReadyList( pxUnblockedTCB );
+                                           ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3469): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                taskYIELD();
+                           ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3428): warning: function 'prvIdleTask' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+{
+^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3832): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+            listGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+                                                             ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(3840): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                listGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+                                                                ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(4112): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    prvAddTaskToReadyList( pxMutexHolderTCB );
+                                                             ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(4202): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    prvAddTaskToReadyList( pxTCB );
+                                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(4315): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                        prvAddTaskToReadyList( pxTCB );
+                                                      ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(4716): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    portYIELD_WITHIN_API();
+                                          ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(4795): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    portYIELD_WITHIN_API();
+                                          ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(4908): warning: default label in switch which covers all enumeration values [-Wcovered-switch-default]
+                default:
+                ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(4924): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                listREMOVE_ITEM( &( pxTCB->xStateListItem ) );
+                                                             ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(4925): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                prvAddTaskToReadyList( pxTCB );
+                                              ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(4950): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    taskYIELD_IF_USING_PREEMPTION();
+                                                   ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(5051): warning: default label in switch which covers all enumeration values [-Wcovered-switch-default]
+                default:
+                ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(5071): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    listREMOVE_ITEM( &( pxTCB->xStateListItem ) );
+                                                                 ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(5072): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    prvAddTaskToReadyList( pxTCB );
+                                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(5078): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    listINSERT_END( &( xPendingReadyList ), &( pxTCB->xEventListItem ) );
+                                                                                        ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(5162): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    listREMOVE_ITEM( &( pxTCB->xStateListItem ) );
+                                                                 ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(5163): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    prvAddTaskToReadyList( pxTCB );
+                                                  ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(5169): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+                    listINSERT_END( &( xPendingReadyList ), &( pxTCB->xEventListItem ) );
+                                                                                        ^
+C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/tasks.c(5332): warning: empty expression statement has no effect; remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
+            listINSERT_END( &xSuspendedTaskList, &( pxCurrentTCB->xStateListItem ) );
+                                                                                    ^
+60 warnings generated.
+compiling tasks.c...
+".\Objects\RTLED_lab1.axf" - 19 Error(s), 110 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.9.0.pack
+                ARM.CMSIS.5.9.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.6.0
+
+Package Vendor: ARM
+                https://www.keil.com/pack/ARM.CMSIS-FreeRTOS.10.5.1.pack
+                ARM.CMSIS-FreeRTOS.10.5.1
+                Bundle of FreeRTOS for Cortex-M and Cortex-A
+   * Component: Config Variant: FreeRTOS Version: 10.5.1
+   * Component: Core Variant: Cortex-M Version: 10.5.1
+   * Component: Heap Variant: Heap_4 Version: 10.5.1
+   * Component: Timers Version: 10.5.1
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32L4xx_DFP.2.6.2.pack
+                Keil.STM32L4xx_DFP.2.6.2
+                STMicroelectronics STM32L4 Series Device Support, Drivers and Examples
+   * Component: Startup Version: 1.3.1
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/RTOS
+  ./RTE/_Target_1
+  C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/CMSIS/RTOS2/FreeRTOS/Include
+  C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/include
+  C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS-FreeRTOS/10.5.1/Source/portable/GCC/ARM_CM4F
+  C:/Users/rzaug/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+  C:/Users/rzaug/AppData/Local/Arm/Packs/Keil/STM32L4xx_DFP/2.6.2/Drivers/CMSIS/Device/ST/STM32L4xx/Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM.FreeRTOS::RTOS:Config:FreeRTOS:10.5.1
+      Include file:  Config/ARMCM/FreeRTOSConfig.h
+
+   * Component: ARM.FreeRTOS::RTOS:Core:Cortex-M:10.5.1
+      Include file:  Source/include/task.h
+      Source file:   Source/queue.c
+      Source file:   Source/list.c
+      Include file:  Source/include/semphr.h
+      Include file:  Source/include/queue.h
+      Include file:  Source/include/FreeRTOS.h
+      Source file:   Source/tasks.c
+      Source file:   Source/portable/GCC/ARM_CM4F/port.c
+      Source file:   CMSIS/RTOS2/FreeRTOS/Source/freertos_evr.c
+
+   * Component: ARM.FreeRTOS::RTOS:Heap:Heap_4:10.5.1
+      Source file:   Source/portable/MemMang/heap_4.c
+
+   * Component: ARM.FreeRTOS::RTOS:Timers:10.5.1
+      Include file:  Source/include/timers.h
+      Source file:   Source/timers.c
+
+   * Component: ARM::CMSIS:CORE:5.6.0
+
+   * Component: Keil::Device:Startup:1.3.1
+      Source file:   Drivers/CMSIS/Device/ST/STM32L4xx/Source/Templates/arm/startup_stm32l476xx.s
+      Source file:   MDK/Device/Source/ARM/STM32L4xx_DB_OPT.s
+      Include file:  Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l4xx.h
+      Source file:   Drivers/CMSIS/Device/ST/STM32L4xx/Source/Templates/system_stm32l4xx.c
+Target not created.
+Build Time Elapsed:  00:00:03
+</pre>
+</body>
+</html>
