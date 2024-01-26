@@ -6,10 +6,10 @@ void useHSI() {
     RCC->CFGR &= ~RCC_CFGR_SW;
     RCC->CFGR |= RCC_CFGR_SW_HSI;
     while(!(RCC->CFGR & RCC_CFGR_SWS_HSI));
-
+    SystemCoreClockUpdate();
 }
 
-void enableTimer(TIM_TypeDef *TIMx, uint32_t prescaler, uint32_t period, uint8_t direction, uint8_t generateInterrupt) {
+void enableTimer(TIM_TypeDef *TIMx, uint32_t prescaler, uint32_t frequency, uint8_t direction, uint8_t generateInterrupt) {
     if(TIMx == TIM1) {
         RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
     } 
@@ -47,8 +47,36 @@ void enableTimer(TIM_TypeDef *TIMx, uint32_t prescaler, uint32_t period, uint8_t
         return;
     }
     //compute arr from prescaler and SystemCoreClock
-
-    arr = (SystemCoreClock / (prescaler + 1)) * period - 1;
     TIMx->PSC = prescaler;
-    TIMx->ARR = period;
+    TIMx->ARR = (uint16_t)(SystemCoreClock / (prescaler * frequency)) - 1;
+    //set direction
+    if(direction == UPCOUNT) {
+        TIMx->CR1 &= ~TIM_CR1_DIR;
+    } 
+    else if(direction == DOWNCOUNT) {
+        TIMx->CR1 |= TIM_CR1_DIR;
+    }
+    //enable interrupt
+    if(TIMx == TIM2 && generateInterrupt) {
+        TIMx->DIER |= TIM_DIER_UIE;
+        NVIC_EnableIRQ(TIM2_IRQn);
+    } 
+    else if(TIMx == TIM3 && generateInterrupt) {
+        TIMx->DIER |= TIM_DIER_UIE;
+        NVIC_EnableIRQ(TIM3_IRQn);
+    } 
+    else if(TIMx == TIM4 && generateInterrupt) {
+        TIMx->DIER |= TIM_DIER_UIE;
+        NVIC_EnableIRQ(TIM4_IRQn);
+    } 
+    else if(TIMx == TIM5 && generateInterrupt) {
+        TIMx->DIER |= TIM_DIER_UIE;
+        NVIC_EnableIRQ(TIM5_IRQn);
+    } 
+    else if(TIMx == TIM7 && generateInterrupt) {
+        TIMx->DIER |= TIM_DIER_UIE;
+        NVIC_EnableIRQ(TIM7_IRQn);
+    }
+    //enable counter
+    TIMx->CR1 |= TIM_CR1_CEN;
 }

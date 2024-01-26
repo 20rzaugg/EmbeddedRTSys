@@ -1,5 +1,7 @@
 #include "stm32l476xx.h"
 
+#define SPECIAL 3
+#define ANALOG 2
 #define OUTPUT 1
 #define INPUT 0
 
