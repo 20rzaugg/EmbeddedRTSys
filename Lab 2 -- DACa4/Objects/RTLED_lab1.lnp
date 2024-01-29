@@ -1,6 +1,8 @@
 --cpu=Cortex-M4.fp.sp --branchpatch=sdcomp-29491-629360
 ".\objects\main.o"
 ".\objects\gpio.o"
+".\objects\dac.o"
+".\objects\tim.o"
 ".\objects\clib_arm.o"
 ".\objects\cmsis_os2.o"
 ".\objects\os_systick.o"

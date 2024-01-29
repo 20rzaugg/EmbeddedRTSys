@@ -1,5 +1,6 @@
 #include "gpio.h"
 #include "tim.h"
+#include "dac.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "sin.h"
@@ -8,6 +9,7 @@
 #define LED 5
 #define BUTTON 13
 
+volatile uint8_t sin_index = 0;
 volatile uint8_t led_state = 0;
 
 void checkButton(void *pvParameters) {
@@ -29,6 +31,18 @@ void controlLED(void *pvParameters) {
 	}
 }
 
+int TIM4_IRQHandler() {
+	if(led_state) {
+		sin_index++;
+		if(sin_index >= 64) {
+			sin_index = 0;
+		}
+		DAC1->DHR12R1 = sinLUT[sin_index] & 0xfff;
+	}
+	TIM4->SR &= ~TIM_SR_UIF;
+	return 0;
+}
+
 int main() {
 	useHSI();
 	pinMode(GPIOC, BUTTON, INPUT);
@@ -36,10 +50,9 @@ int main() {
 	
 	pinMode(GPIOA, LED, OUTPUT);
 	
-	// 85% confident that we want 440*44 = 19360 changes per second
-	// 82% confident that a prescaler of 14 gives us a number very close to a whole number
-	// 30% confident this will work 
-	enableTimer(TIM4, 14, 19360, UPCOUNT, 1);
+	enableTimer(TIM4, 2, 28160, UPCOUNT, 1);
+
+	DACinit_ch1(DAC_NORMAL_NOBUFFER_EXTERNAL, DAC_TRIGGER_NONE);
 
 	BaseType_t t1 = xTaskCreate(checkButton, "checkButton", 128, NULL, 1, NULL);
 	if (t1 != pdPASS) {

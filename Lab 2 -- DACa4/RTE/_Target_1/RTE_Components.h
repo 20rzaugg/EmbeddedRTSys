@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'RTLED_lab1' 
+ * Project: 'DACa4_lab2' 
  * Target:  'Target 1' 
  */
 
