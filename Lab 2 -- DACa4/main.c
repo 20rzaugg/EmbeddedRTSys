@@ -50,9 +50,9 @@ int main() {
 	
 	pinMode(GPIOA, LED, OUTPUT);
 	
-	enableTimer(TIM4, 2, 28160, UPCOUNT, 1);
+	enableTimer(TIM4, 7, 70, UPCOUNT, 1);
 
-	DACinit_ch1(DAC_NORMAL_NOBUFFER_EXTERNAL, DAC_TRIGGER_NONE);
+	DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
 
 	BaseType_t t1 = xTaskCreate(checkButton, "checkButton", 128, NULL, 1, NULL);
 	if (t1 != pdPASS) {

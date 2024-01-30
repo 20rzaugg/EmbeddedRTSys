@@ -9,7 +9,7 @@ void useHSI() {
     SystemCoreClockUpdate();
 }
 
-void enableTimer(TIM_TypeDef *TIMx, uint32_t prescaler, uint32_t frequency, uint8_t direction, uint8_t generateInterrupt) {
+void enableTimer(TIM_TypeDef *TIMx, uint32_t prescaler, uint32_t aar, uint8_t direction, uint8_t generateInterrupt) {
     if(TIMx == TIM1) {
         RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
     } 
@@ -62,10 +62,19 @@ void enableTimer(TIM_TypeDef *TIMx, uint32_t prescaler, uint32_t frequency, uint
         TIMx->DIER |= TIM_DIER_UIE;
     }
     
+    //output compare mode
+    TIMx->CCMR1 &= ~TIM_CCMR1_OC1M;
+    TIMx->CCMR1 |= (TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2); //0110 PWM mode 1
+
+    //set output polarity
+    TIMx->CCER &= ~(TIM_CCER_CC1P | TIM_CCER_CC1NP);
+    //enable output
+    TIMx->CCER |= TIM_CCER_CC1E;
 
     //compute arr from prescaler and SystemCoreClock
     TIMx->PSC = prescaler;
-    TIMx->ARR = (uint16_t)(SystemCoreClock / (prescaler * frequency)) - 1;
+    TIMx->ARR = aar;
+    TIMx->CCR1 = 30;
     //set direction
     if(direction == UPCOUNT) {
         TIMx->CR1 &= ~TIM_CR1_DIR;

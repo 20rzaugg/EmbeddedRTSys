@@ -6,4 +6,4 @@
 
 void useHSI();
 
-void enableTimer(TIM_TypeDef *TIMx, uint32_t prescaler, uint32_t period, uint8_t direction, uint8_t generateInterrupt);
+void enableTimer(TIM_TypeDef *TIMx, uint32_t prescaler, uint32_t aar, uint8_t direction, uint8_t generateInterrupt);
