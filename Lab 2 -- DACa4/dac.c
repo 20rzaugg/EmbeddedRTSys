@@ -5,8 +5,6 @@ void DACinit_ch1(uint32_t mode, uint32_t trigger) {
     RCC->APB1ENR1 |= RCC_APB1ENR1_DAC1EN;
     //Disable DAC channel 1
     DAC->CR &= ~DAC_CR_EN1;
-    //set GPIOA 4 to analog mode
-    pinMode(GPIOA, 4, ANALOG);
     
     //set trigger mode
     if(trigger >= DAC_TRIGGER_NONE) {
@@ -23,6 +21,9 @@ void DACinit_ch1(uint32_t mode, uint32_t trigger) {
 
     //enable DAC channel 1
     DAC->CR |= DAC_CR_EN1;
+		
+		//set GPIOA 4 to analog mode
+    pinMode(GPIOA, 4, ANALOG);
 }
 
 void DACinit_ch2(uint32_t mode, uint32_t trigger) {

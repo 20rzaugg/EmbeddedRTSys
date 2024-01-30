@@ -46,35 +46,42 @@ void enableTimer(TIM_TypeDef *TIMx, uint32_t prescaler, uint32_t frequency, uint
     else {
         return;
     }
+
+    //disable counter
+    TIMx->CR1 &= ~TIM_CR1_CEN;
+    //edge aligned mode
+    TIMx->CR1 &= ~TIM_CR1_CMS;
+    //Master mode
+    TIMx->CR2 &= ~TIM_CR2_MMS;
+    TIMx->CR2 |= TIM_CR2_MMS_2; //100 update trigger as TRGO
+    
+    if(generateInterrupt) {
+        //Trigger interrupt on update
+        TIMx->DIER |= TIM_DIER_TIE;
+        //Enable interrupt
+        TIMx->DIER |= TIM_DIER_UIE;
+    }
+    
+
     //compute arr from prescaler and SystemCoreClock
     TIMx->PSC = prescaler;
     TIMx->ARR = (uint16_t)(SystemCoreClock / (prescaler * frequency)) - 1;
     //set direction
     if(direction == UPCOUNT) {
         TIMx->CR1 &= ~TIM_CR1_DIR;
-    } 
-    else if(direction == DOWNCOUNT) {
+    } else if(direction == DOWNCOUNT) {
         TIMx->CR1 |= TIM_CR1_DIR;
     }
     //enable interrupt
     if(TIMx == TIM2 && generateInterrupt) {
-        TIMx->DIER |= TIM_DIER_UIE;
         NVIC_EnableIRQ(TIM2_IRQn);
-    } 
-    else if(TIMx == TIM3 && generateInterrupt) {
-        TIMx->DIER |= TIM_DIER_UIE;
+    } else if(TIMx == TIM3 && generateInterrupt) {
         NVIC_EnableIRQ(TIM3_IRQn);
-    } 
-    else if(TIMx == TIM4 && generateInterrupt) {
-        TIMx->DIER |= TIM_DIER_UIE;
+    } else if(TIMx == TIM4 && generateInterrupt) {
         NVIC_EnableIRQ(TIM4_IRQn);
-    } 
-    else if(TIMx == TIM5 && generateInterrupt) {
-        TIMx->DIER |= TIM_DIER_UIE;
+    } else if(TIMx == TIM5 && generateInterrupt) {
         NVIC_EnableIRQ(TIM5_IRQn);
-    } 
-    else if(TIMx == TIM7 && generateInterrupt) {
-        TIMx->DIER |= TIM_DIER_UIE;
+    } else if(TIMx == TIM7 && generateInterrupt) {
         NVIC_EnableIRQ(TIM7_IRQn);
     }
     //enable counter

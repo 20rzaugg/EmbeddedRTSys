@@ -1,19 +1,19 @@
 #include "stm32l476xx.h"
 
-#define SPECIAL 3
-#define ANALOG 2
-#define OUTPUT 1
-#define INPUT 0
+#define ANALOG 3u
+#define SPECIAL 2u
+#define OUTPUT 1u
+#define INPUT 0u
 
-#define PUSHPULL 0;
-#define OPENDRAIN 1;
+#define PUSHPULL 0u
+#define OPENDRAIN 1u
 
-#define NONE 0
-#define PULLUP 1
-#define PULLDOWN 2
+#define NONE 0u
+#define PULLUP 1u
+#define PULLDOWN 2u
 
-#define LOW 0
-#define HIGH 1
+#define LOW 0u
+#define HIGH 1u
 
 void pinMode(GPIO_TypeDef *port, unsigned int pin, unsigned int mode);
 
