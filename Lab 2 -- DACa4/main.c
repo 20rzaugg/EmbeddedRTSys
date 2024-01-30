@@ -37,7 +37,7 @@ int TIM4_IRQHandler() {
 		if(sin_index >= 64) {
 			sin_index = 0;
 		}
-		DAC1->DHR12R1 = sinLUT[sin_index] & 0xfff;
+		DAC1->DHR12R1 = (sinLUT[sin_index] + 50u) & 0xfff;
 	}
 	TIM4->SR &= ~TIM_SR_UIF;
 	return 0;
