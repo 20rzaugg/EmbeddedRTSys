@@ -1,0 +1,10 @@
+*.uvoptx.*
+*.d
+*.o
+*.dep
+*.eix
+*.htm
+*.Inp
+*.sct
+*Listings/
+*Objects/
