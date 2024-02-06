@@ -1,0 +1,29 @@
+#include "stm32l476xx.h"
+#include <stdint.h>
+#include "gpio.h"
+
+#define DAC_CHANNEL_1_A4 0
+#define DAC_CHANNEL_2_A5 1
+
+#define DAC_TRIGGER_NONE 8u
+#define DAC_TRIGGER_TIM6_TRGO 0u
+#define DAC_TRIGGER_TIM8_TRGO 1u
+#define DAC_TRIGGER_TIM7_TRGO 2u
+#define DAC_TRIGGER_TIM5_TRGO 3u
+#define DAC_TRIGGER_TIM2_TRGO 4u
+#define DAC_TRIGGER_TIM4_TRGO 5u
+#define DAC_TRIGGER_EXTI9 6u
+#define DAC_TRIGGER_SOFTWARE 7u
+
+#define DAC_NORMAL_BUFFER_EXTERNAL 0u
+#define DAC_NORMAL_BUFFER_INTERNAL 1u
+#define DAC_NORMAL_NOBUFFER_EXTERNAL 2u
+#define DAC_NORMAL_NOBUFFER_INTERNAL 3u
+#define DAC_SAMPLEHOLD_BUFFER_EXTERNAL 4u
+#define DAC_SAMPLEHOLD_BUFFER_INTERNAL 5u
+#define DAC_SAMPLEHOLD_NOBUFFER_EXTERNAL 6u
+#define DAC_SAMPLEHOLD_NOBUFFER_INTERNAL 7u
+
+void DACinit_ch1(uint32_t mode, uint32_t trigger);
+
+void DACinit_ch2(uint32_t mode, uint32_t trigger);
