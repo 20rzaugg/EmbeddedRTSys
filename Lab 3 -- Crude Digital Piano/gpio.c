@@ -26,6 +26,10 @@ void setPullUpDown(GPIO_TypeDef *port, unsigned int pin, unsigned int pupd) {
     port->PUPDR = (port->PUPDR & ~(0x3u << (pin * 2))) | (pupd << (pin * 2));
 }
 
+void setSpeed(GPIO_TypeDef *port, unsigned int pin, unsigned int speed) {
+	port->OSPEEDR = (port->OSPEEDR & ~(0x3u << (pin * 2))) | (speed << (pin * 2));
+}
+
 void digitalWrite(GPIO_TypeDef *port, unsigned int pin, unsigned int value) {
     port->ODR = (port->ODR & ~(0x3u << pin)) | (value << pin);
 }
