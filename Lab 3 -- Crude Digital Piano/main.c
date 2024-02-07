@@ -6,6 +6,7 @@
 #include "sin.h"
 #include "stddef.h" //NULL
 #include "queue.h"
+#include "uart.h"
 
 #define LED 5
 #define BUTTON 13
@@ -40,7 +41,12 @@ void controlLED(void *pvParameters) {
 }
 
 int TIM4_IRQHandler() {
-	if(1) {
+	
+	static uint8_t toneState = 0;
+	
+	xQueueReceiveFromISR(mailboxToneState, &toneState, NULL);
+	
+	if(toneState) {
 		sin_index++;
 		if(sin_index >= 64) {
 			sin_index = 0;
@@ -52,6 +58,10 @@ int TIM4_IRQHandler() {
 }
 
 int main() {
+	
+	mailboxLedState = xQueueCreate(1, sizeof(uint8_t));
+	mailboxToneState = xQueueCreate(1, sizeof(uint8_t));
+	
 	useHSI();
 	pinMode(GPIOC, BUTTON, INPUT);
 	setPullUpDown(GPIOC, BUTTON, PULLUP); //our button is active low
@@ -61,9 +71,6 @@ int main() {
 	enableTimer(TIM4, 7, 70, UPCOUNT, 1);
 
 	DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
-	
-	mailboxLedState = xQueueCreate(1, sizeof(uint8_t));
-	mailboxToneState = xQueueCreate(1, sizeof(uint8_t));
 
 	BaseType_t t1 = xTaskCreate(checkButton, "checkButton", 128, NULL, 1, NULL);
 	if (t1 != pdPASS) {
