@@ -5,34 +5,42 @@
 #include "task.h"
 #include "sin.h"
 #include "stddef.h" //NULL
+#include "queue.h"
 
 #define LED 5
 #define BUTTON 13
 
 volatile uint8_t sin_index = 0;
-volatile uint8_t led_state = 0;
+
+QueueHandle_t mailboxLedState;
+QueueHandle_t mailboxToneState;
 
 void checkButton(void *pvParameters) {
-	static uint8_t last_state = 1;
+	static uint8_t buttonStateLast = 1;
+	static uint8_t ledState = 0;
 	while(1) {
-		uint8_t button_state = digitalRead(GPIOC, BUTTON);
-		if (button_state == 1 && last_state == 0) { //change on button release
-			led_state = !led_state;
+		uint8_t buttonState = digitalRead(GPIOC, BUTTON);
+		if (buttonState == 1 && buttonStateLast == 0) { //change on button release
+			ledState = !ledState;
+			xQueueSendToBack(mailboxLedState, &ledState, 0);
+			xQueueSendToBack(mailboxToneState, &ledState, 0);
 		}
-		last_state = button_state;
+		buttonStateLast = buttonState;
 		vTaskDelay(10);
 	}
 }
 
 void controlLED(void *pvParameters) {
+	uint8_t ledState = 0; 
 	while(1) {
-		digitalWrite(GPIOA, LED, led_state);
+		xQueueReceive(mailboxLedState, &ledState, portMAX_DELAY);
+		digitalWrite(GPIOA, LED, ledState);
 		vTaskDelay(10);
 	}
 }
 
 int TIM4_IRQHandler() {
-	if(led_state) {
+	if(1) {
 		sin_index++;
 		if(sin_index >= 64) {
 			sin_index = 0;
@@ -53,6 +61,9 @@ int main() {
 	enableTimer(TIM4, 7, 70, UPCOUNT, 1);
 
 	DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
+	
+	mailboxLedState = xQueueCreate(1, sizeof(uint8_t));
+	mailboxToneState = xQueueCreate(1, sizeof(uint8_t));
 
 	BaseType_t t1 = xTaskCreate(checkButton, "checkButton", 128, NULL, 1, NULL);
 	if (t1 != pdPASS) {

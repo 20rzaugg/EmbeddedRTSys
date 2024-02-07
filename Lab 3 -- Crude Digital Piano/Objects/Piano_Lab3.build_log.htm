@@ -40,62 +40,68 @@ const uint16_t note_table[] = {
 ./sin.h(28): note: declare 'static' if the variable is not intended to be used outside of this translation unit
 const uint16_t note_table[] = {
       ^
-main.c(12): warning: no previous extern declaration for non-static variable 'sin_index' [-Wmissing-variable-declarations]
+main.c(13): warning: no previous extern declaration for non-static variable 'sin_index' [-Wmissing-variable-declarations]
 volatile uint8_t sin_index = 0;
-                 ^
-main.c(12): note: declare 'static' if the variable is not intended to be used outside of this translation unit
-volatile uint8_t sin_index = 0;
-         ^
-main.c(13): warning: no previous extern declaration for non-static variable 'led_state' [-Wmissing-variable-declarations]
-volatile uint8_t led_state = 0;
                  ^
 main.c(13): note: declare 'static' if the variable is not intended to be used outside of this translation unit
-volatile uint8_t led_state = 0;
+volatile uint8_t sin_index = 0;
          ^
-main.c(18): warning: implicit conversion loses integer precision: 'int' to 'uint8_t' (aka 'unsigned char') [-Wimplicit-int-conversion]
-                uint8_t button_state = digitalRead(GPIOC, BUTTON);
-                        ~~~~~~~~~~~~   ^~~~~~~~~~~~~~~~~~~~~~~~~~
-main.c(15): warning: unused parameter 'pvParameters' [-Wunused-parameter]
+main.c(22): warning: implicit conversion loses integer precision: 'int' to 'uint8_t' (aka 'unsigned char') [-Wimplicit-int-conversion]
+                uint8_t buttonState = digitalRead(GPIOC, BUTTON);
+                        ~~~~~~~~~~~   ^~~~~~~~~~~~~~~~~~~~~~~~~~
+main.c(18): warning: unused parameter 'pvParameters' [-Wunused-parameter]
 void checkButton(void *pvParameters) {
                        ^
-main.c(15): warning: no previous prototype for function 'checkButton' [-Wmissing-prototypes]
+main.c(18): warning: no previous prototype for function 'checkButton' [-Wmissing-prototypes]
 void checkButton(void *pvParameters) {
      ^
-main.c(15): note: declare 'static' if the function is not intended to be used outside of this translation unit
+main.c(18): note: declare 'static' if the function is not intended to be used outside of this translation unit
 void checkButton(void *pvParameters) {
 ^
 static 
-main.c(15): warning: function 'checkButton' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+main.c(18): warning: function 'checkButton' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
 void checkButton(void *pvParameters) {
                                      ^
-main.c(27): warning: unused parameter 'pvParameters' [-Wunused-parameter]
+main.c(33): warning: unused parameter 'pvParameters' [-Wunused-parameter]
 void controlLED(void *pvParameters) {
                       ^
-main.c(27): warning: no previous prototype for function 'controlLED' [-Wmissing-prototypes]
+main.c(33): warning: no previous prototype for function 'controlLED' [-Wmissing-prototypes]
 void controlLED(void *pvParameters) {
      ^
-main.c(27): note: declare 'static' if the function is not intended to be used outside of this translation unit
+main.c(33): note: declare 'static' if the function is not intended to be used outside of this translation unit
 void controlLED(void *pvParameters) {
 ^
 static 
-main.c(27): warning: function 'controlLED' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+main.c(33): warning: function 'controlLED' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
 void controlLED(void *pvParameters) {
                                     ^
-main.c(34): warning: no previous prototype for function 'TIM4_IRQHandler' [-Wmissing-prototypes]
+main.c(42): warning: no previous prototype for function 'TIM4_IRQHandler' [-Wmissing-prototypes]
 int TIM4_IRQHandler() {
     ^
-main.c(34): note: declare 'static' if the function is not intended to be used outside of this translation unit
+main.c(42): note: declare 'static' if the function is not intended to be used outside of this translation unit
 int TIM4_IRQHandler() {
 ^
 static 
-main.c(34): warning: this old-style function definition is not preceded by a prototype [-Wstrict-prototypes]
+main.c(42): warning: this old-style function definition is not preceded by a prototype [-Wstrict-prototypes]
 int TIM4_IRQHandler() {
                    ^
-13 warnings generated.
+main.c(15): warning: no previous extern declaration for non-static variable 'mailboxLedState' [-Wmissing-variable-declarations]
+QueueHandle_t mailboxLedState;
+              ^
+main.c(15): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+QueueHandle_t mailboxLedState;
+^
+main.c(16): warning: no previous extern declaration for non-static variable 'mailboxToneState' [-Wmissing-variable-declarations]
+QueueHandle_t mailboxToneState;
+              ^
+main.c(16): note: declare 'static' if the variable is not intended to be used outside of this translation unit
+QueueHandle_t mailboxToneState;
+^
+14 warnings generated.
 compiling main.c...
 linking...
-Program Size: Code=9750 RO-data=622 RW-data=12 ZI-data=12804  
-".\Objects\Piano_Lab3.axf" - 0 Error(s), 13 Warning(s).
+Program Size: Code=9854 RO-data=622 RW-data=12 ZI-data=12812  
+".\Objects\Piano_Lab3.axf" - 0 Error(s), 14 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -144,29 +150,29 @@ Package Vendor: Keil
 
    * Component: ARM.FreeRTOS::RTOS:Core:Cortex-M:10.5.1
       Source file:   CMSIS\RTOS2\FreeRTOS\Source\freertos_evr.c
-      Source file:   Source\tasks.c
-      Include file:  Source\include\queue.h
-      Include file:  Source\include\FreeRTOS.h
-      Source file:   Source\list.c
-      Include file:  Source\include\semphr.h
       Include file:  Source\include\task.h
+      Source file:   Source\list.c
+      Include file:  Source\include\FreeRTOS.h
+      Include file:  Source\include\queue.h
+      Include file:  Source\include\semphr.h
       Source file:   Source\queue.c
+      Source file:   Source\tasks.c
       Source file:   Source\portable\GCC\ARM_CM4F\port.c
 
    * Component: ARM.FreeRTOS::RTOS:Coroutines:10.5.1
-      Include file:  Source\include\croutine.h
       Source file:   Source\croutine.c
+      Include file:  Source\include\croutine.h
 
    * Component: ARM.FreeRTOS::RTOS:Event Groups:10.5.1
-      Source file:   Source\event_groups.c
       Include file:  Source\include\event_groups.h
+      Source file:   Source\event_groups.c
 
    * Component: ARM.FreeRTOS::RTOS:Heap:Heap_4:10.5.1
       Source file:   Source\portable\MemMang\heap_4.c
 
    * Component: ARM.FreeRTOS::RTOS:Timers:10.5.1
-      Source file:   Source\timers.c
       Include file:  Source\include\timers.h
+      Source file:   Source\timers.c
 
    * Component: ARM::CMSIS:CORE:6.0.0
 
@@ -177,9 +183,9 @@ Package Vendor: Keil
       Source file:   CMSIS\RTOS2\FreeRTOS\Source\ARM\clib_arm.c
 
    * Component: Keil::Device:Startup:1.3.1
+      Include file:  Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l4xx.h
       Source file:   Drivers\CMSIS\Device\ST\STM32L4xx\Source\Templates\arm\startup_stm32l476xx.s
       Source file:   MDK\Device\Source\ARM\STM32L4xx_DB_OPT.s
-      Include file:  Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l4xx.h
       Source file:   Drivers\CMSIS\Device\ST\STM32L4xx\Source\Templates\system_stm32l4xx.c
 Build Time Elapsed:  00:00:01
 </pre>
