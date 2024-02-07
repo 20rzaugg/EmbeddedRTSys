@@ -1,4 +1,5 @@
 *.uvoptx.*
+*.uvguix.*
 *.d
 *.o
 *.dep
