@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'DACa4_lab2' 
+ * Project: 'Piano_Lab3' 
  * Target:  'Target 1' 
  */
 
@@ -20,6 +20,8 @@
 #define RTE_RTOS_FreeRTOS_CONFIG_RTOS2  /* RTOS FreeRTOS Config for CMSIS RTOS2 API */
 /* ARM.FreeRTOS::RTOS:Core:Cortex-M:10.5.1 */
 #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
+/* ARM.FreeRTOS::RTOS:Coroutines:10.5.1 */
+#define RTE_RTOS_FreeRTOS_COROUTINE     /* RTOS FreeRTOS Co-routines */
 /* ARM.FreeRTOS::RTOS:Event Groups:10.5.1 */
 #define RTE_RTOS_FreeRTOS_EVENTGROUPS   /* RTOS FreeRTOS Event Groups */
 /* ARM.FreeRTOS::RTOS:Heap:Heap_4:10.5.1 */
