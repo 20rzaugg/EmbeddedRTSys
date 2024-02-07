@@ -9,9 +9,9 @@ int main() {
 	
 	uart_initialize();
 	
-	char *message = "Hello World.\n";
+	char *message = "Hello World.\n\r";
 	int i;
-	for(i = 0; i < 13; i++) {
+	for(i = 0; i < 14; i++) {
 		uart_transmit(message + i);
 	}
 	

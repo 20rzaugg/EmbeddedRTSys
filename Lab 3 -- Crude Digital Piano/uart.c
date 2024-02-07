@@ -42,7 +42,7 @@ void uart_initialize(void) {
 	// No bits to set in CR3.
 	
 	// Configures the baud rate
-	USART2->BRR = 0x833;	// Sets a Baud rate of 9600 (assuming a clock rate of 8MHz)
+	USART2->BRR = 417;	// Sets a Baud rate of 9600 (assuming a clock rate of 4MHz)
 
 	// Waits until the transmitter enable has been acknowledged.
 	// while((USART2->ISR & USART_ISR_TEACK) == 0);
@@ -54,7 +54,7 @@ void uart_initialize(void) {
 	USART2->CR1 |= USART_CR1_UE;
 	
 	// Enables USART2 interrupts
-	NVIC_EnableIRQ(USART2_IRQn);
+	// NVIC_EnableIRQ(USART2_IRQn);
 	
 }
 
@@ -69,7 +69,7 @@ void uart_transmit(const char *data) {
 	while((USART2->ISR & USART_ISR_TXE) == 0);
 	
 	// Transfers the data to the transmit register
-	USART2->TDR = *data | USART_TDR_TDR;
+	USART2->TDR = *data & USART_TDR_TDR;
 	
 }
 
@@ -95,7 +95,20 @@ void uart_configure_io(void) {
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
 	
 	// Configure alternate function for pins PA2 (Tx) and PA3 (Rx).
+	GPIOA->MODER &= ~GPIO_MODER_MODE2;
+	GPIOA->MODER &= ~GPIO_MODER_MODE3;
 	GPIOA->MODER |= GPIO_MODER_MODE2_1;
 	GPIOA->MODER |= GPIO_MODER_MODE3_1;
+	
+	// Configures PA2 and PA3 to use their Alternate Function 7 (USART)
+	GPIOA->AFR[0] |= 0x77 << 8;
+	
+	// Sets PA2 and PA3 to Very High Speed.
+	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED2;
+	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED3;
+	
+	// Sets PA2 and PA3 to be pulled up
+	GPIOA->PUPDR |= GPIO_PUPDR_PUPD2_0;
+	GPIOA->PUPDR |= GPIO_PUPDR_PUPD3_0;
 
 }
