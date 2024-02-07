@@ -15,18 +15,11 @@
 #define LOW 0u
 #define HIGH 1u
 
-#define LOWSPEED 0u
-#define MEDIUMSPEED 1u
-#define HIGHSPEED 2u
-#define VERYHIGHSPEED 3u
-
 void pinMode(GPIO_TypeDef *port, unsigned int pin, unsigned int mode);
 
 void setOutputType(GPIO_TypeDef *port, unsigned int pin, unsigned int type);
 
 void setPullUpDown(GPIO_TypeDef *port, unsigned int pin, unsigned int pupd);
-
-void setSpeed(GPIO_TypeDef *port, unsigned int pin, unsigned int speed);
 
 void digitalWrite(GPIO_TypeDef *port, unsigned int pin, unsigned int value);
 

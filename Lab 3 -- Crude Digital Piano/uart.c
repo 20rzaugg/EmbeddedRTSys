@@ -1,5 +1,5 @@
 #include "uart.h"
-
+#include "gpio.h"
 #include "stm32l476xx.h"
 
 // Private function prototypes
@@ -91,24 +91,18 @@ void USART2_IRQHandler(void) {
 // Configures the I/O used by the USART.
 void uart_configure_io(void) {
 
-	// Enable the clock to I/O Bank A.
-	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-	
-	// Configure alternate function for pins PA2 (Tx) and PA3 (Rx).
-	GPIOA->MODER &= ~GPIO_MODER_MODE2;
-	GPIOA->MODER &= ~GPIO_MODER_MODE3;
-	GPIOA->MODER |= GPIO_MODER_MODE2_1;
-	GPIOA->MODER |= GPIO_MODER_MODE3_1;
-	
-	// Configures PA2 and PA3 to use their Alternate Function 7 (USART)
-	GPIOA->AFR[0] |= 0x77 << 8;
-	
-	// Sets PA2 and PA3 to Very High Speed.
-	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED2;
-	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED3;
-	
-	// Sets PA2 and PA3 to be pulled up
-	GPIOA->PUPDR |= GPIO_PUPDR_PUPD2_0;
-	GPIOA->PUPDR |= GPIO_PUPDR_PUPD3_0;
+	pinMode(GPIOA, 2, SPECIAL);
+  pinMode(GPIOA, 3, SPECIAL);
+
+  setOutputType(GPIOA, 2, PUSHPULL);
+  setOutputType(GPIOA, 3, PUSHPULL);
+
+  setSpeed(GPIOA, 2, VERYHIGHSPEED);
+  setSpeed(GPIOA, 3, VERYHIGHSPEED);
+
+  setPullUpDown(GPIOA, 2, PULLUP);
+  setPullUpDown(GPIOA, 3, PULLUP);
+
+  GPIOA->AFR[0] |= 0x77 << 8;
 
 }
