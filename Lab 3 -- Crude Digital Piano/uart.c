@@ -54,7 +54,7 @@ void uart_initialize(void) {
 	USART2->CR1 |= USART_CR1_UE;
 	
 	// Enables USART2 interrupts
-	// NVIC_EnableIRQ(USART2_IRQn);
+	NVIC_EnableIRQ(USART2_IRQn);
 	
 }
 
@@ -81,7 +81,7 @@ void USART2_IRQHandler(void) {
 	
 	if ((interrupt_status & USART_ISR_RXNE) != 0) {
 		// Data has been received over the UART.
-		char received_data = (char)(USART2->RDR | USART_RDR_RDR);
+		char received_data = (char)(USART2->RDR & USART_RDR_RDR);
 		uart_callback_data_received(received_data);
 		return;
 	}
