@@ -59,8 +59,8 @@ void changeTonePitch(char note) {
 
 	// Check if the received character was a valid note name.
 	if (
-		(note <= 'A' && note >= 'G') ||
-		(note <= 'a' && note >= 'g')
+		(note >= 'A' && note <= 'G') ||
+		(note >= 'a' && note <= 'g')
 	) {
 		
 		// Determine the note's pitch.
