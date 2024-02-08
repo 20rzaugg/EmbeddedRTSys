@@ -20,7 +20,7 @@ static QueueHandle_t mailboxToneState;
 static QueueHandle_t mailboxTonePitch;
 
 extern const uint16_t note_table[8];
-static const uint16_t tonePitchInitial = 248;
+static const uint16_t tonePitchInitial = 284;
 
 // Private function prototypes
 
@@ -59,16 +59,16 @@ void changeTonePitch(char note) {
 
 	// Check if the received character was a valid note name.
 	if (
-		(note >= 'A' && note <= 'G') ||
-		(note >= 'a' && note <= 'g')
+		(note >= 'A' && note <= 'H') ||
+		(note >= 'a' && note <= 'h')
 	) {
 		
 		// Determine the note's pitch.
 		uint16_t newPitch;
-		if (note <= 'A' && note >= 'G') {
-			newPitch = note_table[note - 97];
-		} else {
+		if (note >= 'A' && note <= 'H') {
 			newPitch = note_table[note - 65];
+		} else {
+			newPitch = note_table[note - 97];
 		}
 		
 		xQueueSendToFrontFromISR(mailboxTonePitch, &newPitch, NULL);
@@ -113,7 +113,7 @@ int main() {
 	uart_initialize();
 	uart_set_callback_data_received(changeTonePitch);
 	
-	enableTimer(TIM4, 7, 70, UPCOUNT, 1);
+	enableTimer(TIM4, 2, 70, UPCOUNT, 1);
 	TIM4->CR1 |= TIM_CR1_ARPE;
 
 	DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
