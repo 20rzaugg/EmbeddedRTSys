@@ -42,7 +42,7 @@ void uart_initialize(void) {
 	// No bits to set in CR3.
 	
 	// Configures the baud rate
-	USART2->BRR = 417;	// Sets a Baud rate of 9600 (assuming a clock rate of 4MHz)
+	USART2->BRR = 1667;	// Sets a Baud rate of 9600 (assuming a clock rate of 16MHz)
 
 	// Waits until the transmitter enable has been acknowledged.
 	// while((USART2->ISR & USART_ISR_TEACK) == 0);

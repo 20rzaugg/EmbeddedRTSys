@@ -11,10 +11,25 @@
 #define LED 5
 #define BUTTON 13
 
+// Static variables
+
 volatile uint8_t sin_index = 0;
 
-QueueHandle_t mailboxLedState;
-QueueHandle_t mailboxToneState;
+static QueueHandle_t mailboxLedState;
+static QueueHandle_t mailboxToneState;
+static QueueHandle_t mailboxTonePitch;
+
+extern const uint16_t note_table[8];
+static const uint16_t tonePitchInitial = 248;
+
+// Private function prototypes
+
+void checkButton(void *pvParameters);
+void controlLED(void *pvParameters);
+
+void changeTonePitch(char note);
+
+// Private function bodies
 
 void checkButton(void *pvParameters) {
 	static uint8_t buttonStateLast = 1;
@@ -40,11 +55,34 @@ void controlLED(void *pvParameters) {
 	}
 }
 
+void changeTonePitch(char note) {
+
+	// Check if the received character was a valid note name.
+	if (
+		(note <= 'A' && note >= 'G') ||
+		(note <= 'a' && note >= 'g')
+	) {
+		
+		// Determine the note's pitch.
+		uint16_t newPitch;
+		if (note <= 'A' && note >= 'G') {
+			newPitch = note_table[note - 97];
+		} else {
+			newPitch = note_table[note - 65];
+		}
+		
+		xQueueSendToFrontFromISR(mailboxTonePitch, &newPitch, NULL);
+	}
+
+}
+
 int TIM4_IRQHandler() {
 	
 	static uint8_t toneState = 0;
+	static uint16_t tonePitch = tonePitchInitial;
 	
 	xQueueReceiveFromISR(mailboxToneState, &toneState, NULL);
+	xQueueReceiveFromISR(mailboxTonePitch, &tonePitch, NULL);
 	
 	if(toneState) {
 		sin_index++;
@@ -53,6 +91,9 @@ int TIM4_IRQHandler() {
 		}
 		DAC1->DHR12R1 = (sinLUT[sin_index] + 50u) & 0xfff;
 	}
+	
+	TIM4->ARR = tonePitch;
+	
 	TIM4->SR &= ~TIM_SR_UIF;
 	return 0;
 }
@@ -61,6 +102,7 @@ int main() {
 	
 	mailboxLedState = xQueueCreate(1, sizeof(uint8_t));
 	mailboxToneState = xQueueCreate(1, sizeof(uint8_t));
+	mailboxTonePitch = xQueueCreate(1, sizeof(uint16_t));
 	
 	useHSI();
 	pinMode(GPIOC, BUTTON, INPUT);
@@ -68,7 +110,11 @@ int main() {
 	
 	pinMode(GPIOA, LED, OUTPUT);
 	
+	uart_initialize();
+	uart_set_callback_data_received(changeTonePitch);
+	
 	enableTimer(TIM4, 7, 70, UPCOUNT, 1);
+	TIM4->CR1 |= TIM_CR1_ARPE;
 
 	DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
 
