@@ -13,7 +13,11 @@
 
 // Static variables
 
-volatile uint8_t sin_index = 0;
+volatile uint8_t sin_index1 = 0;
+volatile uint8_t sine_index2 = 0;
+volatile uint8_t sine_index4 = 0;
+volatile uint8_t sine_index8 = 0;
+volatile uint8_t sine_index16 = 0;
 
 static QueueHandle_t mailboxLedState;
 static QueueHandle_t mailboxToneState;
@@ -80,16 +84,39 @@ int TIM4_IRQHandler() {
 	
 	static uint8_t toneState = 0;
 	static uint16_t tonePitch = tonePitchInitial;
+	static float volume = 0;
 	
 	xQueueReceiveFromISR(mailboxToneState, &toneState, NULL);
-	xQueueReceiveFromISR(mailboxTonePitch, &tonePitch, NULL);
+	if(xQueueReceiveFromISR(mailboxTonePitch, &tonePitch, NULL)) {
+		volume = 1;
+	}
+
 	
+
 	if(toneState) {
-		sin_index++;
-		if(sin_index >= 64) {
-			sin_index = 0;
+		sin_index1 +=1 ;
+		if(sin_index1 >= 64) {
+			sin_index1 = 0;
 		}
-		DAC1->DHR12R1 = (sinLUT[sin_index] + 50u) & 0xfff;
+		sine_index2 += 2;
+		if(sine_index2 >= 64) {
+			sine_index2 = 64 - sine_index2;
+		}
+		sine_index4 += 4;
+		if(sine_index4 >= 64) {
+			sine_index4 = 64 - sine_index4;
+		}
+		sine_index8 += 8;
+		if(sine_index8 >= 64) {
+			sine_index8 = 64 - sine_index8;
+		}
+		sine_index16 += 16;
+		if(sine_index16 >= 64) {
+			sine_index16 = 64 - sine_index16;
+		}
+		uint8_t lut_value = (uint8_t)(volume*((sinLUT[sin_index1] + sinLUT[sine_index2] + sinLUT[sine_index4] + sinLUT[sine_index8] + sinLUT[sine_index16])) / 5.0);
+		//volume = volume * 0.9995;
+		DAC1->DHR12R1 = (lut_value + 50u) & 0xfff;
 	}
 	
 	TIM4->ARR = tonePitch;
@@ -113,7 +140,7 @@ int main() {
 	uart_initialize();
 	uart_set_callback_data_received(changeTonePitch);
 	
-	enableTimer(TIM4, 2, 70, UPCOUNT, 1);
+	enableTimer(TIM4, 1, 70, UPCOUNT, 1);
 	TIM4->CR1 |= TIM_CR1_ARPE;
 
 	DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
