@@ -1,6 +1,5 @@
 #include "uart.h"
 #include "gpio.h"
-#include "stm32l476xx.h"
 
 // Private function prototypes
 
@@ -90,19 +89,18 @@ void USART2_IRQHandler(void) {
 
 // Configures the I/O used by the USART.
 void uart_configure_io(void) {
+    
+    pinMode(GPIOA, 2, SPECIAL);
+    pinMode(GPIOA, 3, SPECIAL);
 
-	pinMode(GPIOA, 2, SPECIAL);
-  pinMode(GPIOA, 3, SPECIAL);
+    setOutputType(GPIOA, 2, PUSHPULL);
+    setOutputType(GPIOA, 3, PUSHPULL);
 
-  setOutputType(GPIOA, 2, PUSHPULL);
-  setOutputType(GPIOA, 3, PUSHPULL);
+    setSpeed(GPIOA, 2, VERYHIGHSPEED);
+    setSpeed(GPIOA, 3, VERYHIGHSPEED);
 
-  setSpeed(GPIOA, 2, VERYHIGHSPEED);
-  setSpeed(GPIOA, 3, VERYHIGHSPEED);
+    setPullUpDown(GPIOA, 2, PULLUP);
+    setPullUpDown(GPIOA, 3, PULLUP);
 
-  setPullUpDown(GPIOA, 2, PULLUP);
-  setPullUpDown(GPIOA, 3, PULLUP);
-
-  GPIOA->AFR[0] |= 0x77 << 8;
-
+    GPIOA->AFR[0] |= 0x77 << 8;
 }
