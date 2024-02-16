@@ -13,7 +13,7 @@
 
 // Static variables
 
-volatile uint8_t sin_index1 = 0;
+volatile uint8_t sine_index1 = 0;
 volatile uint8_t sine_index2 = 0;
 volatile uint8_t sine_index4 = 0;
 volatile uint8_t sine_index8 = 0;
@@ -84,38 +84,17 @@ int TIM4_IRQHandler() {
 	
 	static uint8_t toneState = 0;
 	static uint16_t tonePitch = tonePitchInitial;
-	static float volume = 0;
 	
 	xQueueReceiveFromISR(mailboxToneState, &toneState, NULL);
-	if(xQueueReceiveFromISR(mailboxTonePitch, &tonePitch, NULL)) {
-		volume = 1;
-	}
-
-	
+	xQueueReceiveFromISR(mailboxTonePitch, &tonePitch, NULL);	
 
 	if(toneState) {
-		sin_index1 +=1 ;
-		if(sin_index1 >= 64) {
-			sin_index1 = 0;
-		}
-		sine_index2 += 2;
-		if(sine_index2 >= 64) {
-			sine_index2 = 64 - sine_index2;
-		}
-		sine_index4 += 4;
-		if(sine_index4 >= 64) {
-			sine_index4 = 64 - sine_index4;
-		}
-		sine_index8 += 8;
-		if(sine_index8 >= 64) {
-			sine_index8 = 64 - sine_index8;
-		}
-		sine_index16 += 16;
-		if(sine_index16 >= 64) {
-			sine_index16 = 64 - sine_index16;
-		}
-		uint8_t lut_value = (uint8_t)(volume*((sinLUT[sin_index1] + sinLUT[sine_index2] + sinLUT[sine_index4] + sinLUT[sine_index8] + sinLUT[sine_index16])) / 5.0);
-		//volume = volume * 0.9995;
+		sine_index1 = (sine_index1 + 1) % 64;
+		sine_index2 = (sine_index2 + 2) % 64; // high frequency component of the sound
+		sine_index4 = (sine_index4 + 4) % 64;
+		sine_index8 = (sine_index8 + 8) % 64;
+		sine_index16 = (sine_index16 + 16) % 64;
+		uint8_t lut_value = (uint8_t)(((sinLUT[sin_index1] + sinLUT[sine_index2] + sinLUT[sine_index4] + sinLUT[sine_index8] + sinLUT[sine_index16])) / 5.0);
 		DAC1->DHR12R1 = (lut_value + 50u) & 0xfff;
 	}
 	
