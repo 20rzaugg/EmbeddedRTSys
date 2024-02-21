@@ -31,7 +31,7 @@ static const uint16_t tonePitchInitial = 284;
 void checkButton(void *pvParameters);
 void controlLED(void *pvParameters);
 
-void changeTonePitch(char note);
+void changeTonePitch(void *pvParameters);
 
 // Private function bodies
 
@@ -59,7 +59,12 @@ void controlLED(void *pvParameters) {
 	}
 }
 
-void changeTonePitch(char note) {
+void changeTonePitch(void *pvParameters) {
+	
+	static char note;
+	
+	// Check the note queue.
+	xQueueReceive(queueUartNote, &note, portMAX_DELAY);
 
 	// Check if the received character was a valid note name.
 	if (
@@ -129,6 +134,11 @@ int main() {
 	}
 	BaseType_t t2 = xTaskCreate(controlLED, "controlLED", 128, NULL, 1, NULL);
 	if (t2 != pdPASS) {
+		while(1);
+	}
+	
+	BaseType_t t3 = xTaskCreate(changeTonePitch, "changetonePitch", 128, NULL, 1, NULL);
+	if (t3 != pdPASS) {
 		while(1);
 	}
 	

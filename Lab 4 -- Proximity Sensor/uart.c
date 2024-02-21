@@ -109,7 +109,7 @@ void uartPcTransmit(const char *data, int length) {
 	BaseType_t characterAddedToQueue;
 	int i;
 	for (i = 0; i < length; i++) {
-		characterAddedToQueue = xQueueSendToBack( queuePcMessage, data + i, 0);
+		characterAddedToQueue = xQueueSendToBack(queuePcMessage, data + i, 0);
 		if (characterAddedToQueue != pdTRUE) {
 			break;
 		}
@@ -128,15 +128,45 @@ void USART2_IRQHandler(void) {
 	// Determine the type of interrupt.
 	volatile unsigned int interrupt_status = USART2->ISR;
 	
+	// Data has been received over the UART.
 	if ((interrupt_status & USART_ISR_RXNE) != 0) {
-		// Data has been received over the UART.
+		
+		// Receive the data.
 		char receivedData = (char)(USART2->RDR & USART_RDR_RDR);
 		
-		
+		// Determine which queue the needs to go to.
+		switch (receivedData) {
+			case 'a':
+			case 'A':
+			case 'b':
+			case 'B':
+			case 'c':
+			case 'C':
+			case 'd':
+			case 'D':
+			case 'e':
+			case 'E':
+			case 'f':
+			case 'F':
+			case 'g':
+			case 'G':
+			case 'h':
+			case 'H':
+				// Send it to the note queue.
+				xQueueSendToBackFromISR(queueUartNote, &receivedData, NULL);
+				break;
+			case 't':
+			case 'T':
+			case 'p':
+			case 'P':
+				// Send it to the sensor command queue.
+				xQueueSendToBackFromISR(queueUartSensorCommand, &receivedData, NULL);
+				break;
+		}
 	}
 	
+	// Next bit is ready to transmit.
 	else if ((interrupt_status & USART_ISR_TXE) != 0) {
-		// Next bit is ready to transmit.
 		// This interrupt will only be raised if a message is currently being transmitted.
 		
 		// Retrieve the next character to transmit.
