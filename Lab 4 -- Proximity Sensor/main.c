@@ -63,24 +63,27 @@ void changeTonePitch(void *pvParameters) {
 	
 	static char note;
 	
-	// Check the note queue.
-	xQueueReceive(queueUartNote, &note, portMAX_DELAY);
+	while(1) {
+	
+		// Check the note queue.
+		xQueueReceive(queueUartNote, &note, portMAX_DELAY);
 
-	// Check if the received character was a valid note name.
-	if (
-		(note >= 'A' && note <= 'H') ||
-		(note >= 'a' && note <= 'h')
-	) {
-		
-		// Determine the note's pitch.
-		uint16_t newPitch;
-		if (note >= 'A' && note <= 'H') {
-			newPitch = note_table[note - 65];
-		} else {
-			newPitch = note_table[note - 97];
-		}
-		
-		xQueueSendToFrontFromISR(mailboxTonePitch, &newPitch, NULL);
+		// Check if the received character was a valid note name.
+		if (
+			(note >= 'A' && note <= 'H') ||
+			(note >= 'a' && note <= 'h')
+		) {
+			
+			// Determine the note's pitch.
+			uint16_t newPitch;
+			if (note >= 'A' && note <= 'H') {
+				newPitch = note_table[note - 65];
+			} else {
+				newPitch = note_table[note - 97];
+			}
+			
+			xQueueSendToFrontFromISR(mailboxTonePitch, &newPitch, NULL);
+		}		
 	}
 
 }

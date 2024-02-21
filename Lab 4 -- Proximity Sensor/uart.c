@@ -77,10 +77,21 @@ void uartPcInitialize(void) {
 void uartSensorInitialize(void) {
 
 	// Configure the USART3 I/O.
+	pinMode(GPIOB, 10, SPECIAL);
+	pinMode(GPIOB, 11, SPECIAL);
+	setOutputType(GPIOB, 10, PUSHPULL);
+	setOutputType(GPIOB, 11, PUSHPULL);
+	setSpeed(GPIOB, 10, VERYHIGHSPEED);
+	setSpeed(GPIOB, 11, VERYHIGHSPEED);
+	setPullUpDown(GPIOB, 10, PULLUP);
+	setPullUpDown(GPIOB, 11, PULLUP);
+	GPIOB->AFR[1] |= 0x77 << 8;
 	
 	// Enables the USART3 peripheral clock.
+	RCC->APB1ENR1 |= RCC_APB1ENR1_USART3EN;
 	
 	// Disables the USART so the control registers can be set.
+	USART3->CR1 &= ~USART_CR1_UE;
 	
 	// Configures Control Register 1.
 	
@@ -95,11 +106,13 @@ void uartSensorInitialize(void) {
 	// Not bits to set the CR3.
 	
 	// Configures the baud rate.
-	// Sets a Baud rate of 9600 (assuming a clock rate of 16MHz.
+	USART3->BRR = 1667; // Sets a Baud rate of 9600 (assuming a clock rate of 16MHz.
 	
 	// Enables the USART.
+	USART3->CR1 |= USART_CR1_UE;
 	
 	// Enables USART3 interrupts.
+	NVIC_EnableIRQ(USART3_IRQn);
 
 }
 
