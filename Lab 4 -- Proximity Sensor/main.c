@@ -94,7 +94,7 @@ int TIM4_IRQHandler() {
 		sine_index4 = (sine_index4 + 4) % 64;
 		sine_index8 = (sine_index8 + 8) % 64;
 		sine_index16 = (sine_index16 + 16) % 64;
-		uint8_t lut_value = (uint8_t)(((sinLUT[sin_index1] + sinLUT[sine_index2] + sinLUT[sine_index4] + sinLUT[sine_index8] + sinLUT[sine_index16])) / 5.0);
+		uint8_t lut_value = (uint8_t)(((sinLUT[sine_index1] + sinLUT[sine_index2] + sinLUT[sine_index4] + sinLUT[sine_index8] + sinLUT[sine_index16])) / 5.0);
 		DAC1->DHR12R1 = (lut_value + 50u) & 0xfff;
 	}
 	
@@ -116,8 +116,7 @@ int main() {
 	
 	pinMode(GPIOA, LED, OUTPUT);
 	
-	uart_initialize();
-	uart_set_callback_data_received(changeTonePitch);
+	uartPcInitialize();
 	
 	enableTimer(TIM4, 1, 70, UPCOUNT, 1);
 	TIM4->CR1 |= TIM_CR1_ARPE;
@@ -132,6 +131,11 @@ int main() {
 	if (t2 != pdPASS) {
 		while(1);
 	}
+	
+	char *helloWorld = "Hello World.\n\r";
+	uartPcTransmit(helloWorld, 15);
+	
 	vTaskStartScheduler();
+	
 	while(1);
 }

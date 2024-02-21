@@ -3,15 +3,32 @@
 
 #include "stm32l476xx.h"
 
+#include "FreeRTOS.h"
+#include "queue.h"
+
+// Public defines
+#define PC_MESSAGE_MAX_LENGTH (64)
+
+// Public global variables
+
+// Note names, in the form of chars, go in this queue.
+extern QueueHandle_t queueUartNote;
+
+// t and p go in this queue.
+extern QueueHandle_t queueUartSensorCommand;
+
 // Public function prototypes
 
-// Initializes the UART peripheral according to the settings in uart.h
-void uart_initialize(void);
+// Initialize the UART connected to the PC, including any pin configuration.
+void uartPcInitialize(void);
 
-// Transmits a byte over the UART.
-void uart_transmit(const char *data);
-	
-// Sets the callback for when a byte of data is received.
-void uart_set_callback_data_received(void (*callback)(char));
+// Initialize the UART connected to the ultrasonic sensor, including any pin configuration.
+void uartSensorInitialize(void);
+
+// Transmit a message of arbitrary length to the connected PC.
+void uartPcTransmit(const char *data, int length);
+
+// Transmit a message of exactly one byte to the ultrasonic sensor.
+void uartSensorTransmit(char data);
 
 #endif
