@@ -99,8 +99,8 @@ void uartSensorInitialize(void) {
 	uartSensorState = IDLE;
 	
 	// Initialize the queues
-	queueUartSensorTemperature = xQueueCreate(1, sizeof(uint16_t));
-	queueUartSensorDistance = xQueueCreate(1, sizeof(uint8_t));
+	queueUartSensorTemperature = xQueueCreate(1, sizeof(uint8_t));
+	queueUartSensorDistance = xQueueCreate(1, sizeof(uint16_t));
 	
 	// Configure the USART3 I/O.
 	pinMode(GPIOB, 10, SPECIAL);
@@ -253,6 +253,9 @@ void USART2_IRQHandler(void) {
 }
 
 void USART3_IRQHandler(void) {
+	
+	static uint8_t temperature = 0;
+	static uint16_t distance = 0;
 
 	// Determine the type of interrupt.
 	volatile unsigned int interrupt_status = USART3->ISR;
@@ -262,8 +265,6 @@ void USART3_IRQHandler(void) {
 	
 		// Receive the data.
 		volatile unsigned int receivedData = (char)(USART3->RDR & USART_RDR_RDR);
-		uint8_t temperature = 0;
-		uint16_t distance = 0;
 		
 		switch (uartSensorState) {
 			case WAITING_FOR_TEMPERATURE:
@@ -276,7 +277,7 @@ void USART3_IRQHandler(void) {
 				uartSensorState = WAITING_FOR_DISTANCE_SECOND_BYTE;
 				break;
 			case WAITING_FOR_DISTANCE_SECOND_BYTE:
-				distance += receivedData;
+				distance += (uint16_t)(receivedData);
 				uartSensorState = IDLE;
 				xQueueSendToBackFromISR(queueUartSensorDistance, &distance, NULL);
 				break;

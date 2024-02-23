@@ -130,7 +130,7 @@ void sendTemperatureMessage(void *pvParameters) {
 		xQueueReceive(queueUartSensorTemperature, &temperatureC, portMAX_DELAY);
 		
 		// Convert the C temperature to F
-		int temperatureF = temperatureC * 9 / 5 + 32;
+		int temperatureF = (temperatureC - 45) * 9 / 5 + 32;
 		
 		// Create the message string
 		int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, format, temperatureC);
@@ -153,7 +153,7 @@ void sendDistanceMessage(void *pvParameters) {
 		xQueueReceive(queueUartSensorDistance, &distanceMm, portMAX_DELAY);
 		
 		// Convert the mm distance to in
-		int distanceIn = (int)(distanceMm * 0.03937f);
+		int distanceIn = (int)(distanceMm / 25.4f);
 		
 		int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, format, distanceIn);
 		
