@@ -8,6 +8,8 @@
 #include "queue.h"
 #include "uart.h"
 
+#include <stdio.h>
+
 #define LED 5
 #define BUTTON 13
 
@@ -32,6 +34,9 @@ void checkButton(void *pvParameters);
 void controlLED(void *pvParameters);
 
 void changeTonePitch(void *pvParameters);
+
+void sendTemperatureMessage(void *pvParameters);
+void sentDistanceMessage(void *pvParameters);
 
 // Private function bodies
 
@@ -87,6 +92,53 @@ void changeTonePitch(void *pvParameters) {
 	}
 
 }
+
+void sendTemperatureMessage(void *pvParameters) {
+
+	static char* format = "%u deg F\n\r";
+	static char message[PC_MESSAGE_MAX_LENGTH];
+	
+	while(1) {
+		
+		// Receive the temperature value.
+		uint8_t temperatureC;
+		xQueueReceive(queueUartSensorTemperature, &temperatureC, portMAX_DELAY);
+		
+		// Convert the C temperature to F
+		int temperatureF = temperatureC * 9 / 5 + 32;
+		
+		// Create the message string
+		int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, format, temperatureF);
+		
+		// Transmit the message
+		uartPcTransmit(message, messageLength);
+	}
+
+}
+void sentDistanceMessage(void *pvParameters) {
+	
+	static char* format = "%u inches\n\r";
+	static char message[PC_MESSAGE_MAX_LENGTH];
+
+	while(1) {
+		
+		// Receive the distance value.
+		uint16_t distanceMm;
+		xQueueReceive(queueUartSensorDistance, &distanceMm, portMAX_DELAY);
+		
+		// Convert the mm distance to in
+		int distanceIn = (int)(distanceMm * 0.03937f);
+		
+		int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, format, distanceIn);
+		
+		// Transmit the message
+		uartPcTransmit(message, messageLength);
+	
+	}
+
+}
+
+
 
 int TIM4_IRQHandler() {
 	
@@ -152,3 +204,5 @@ int main() {
 	
 	while(1);
 }
+
+
