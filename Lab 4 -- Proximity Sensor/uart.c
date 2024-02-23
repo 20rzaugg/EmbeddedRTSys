@@ -4,7 +4,10 @@
 #include "uart.h"
 #include "gpio.h"
 
-// Public global variables
+#define UART_SENSOR_COMMAND_TEMPERATURE 0x50
+#define UART_SENSOR_COMMAND_DISTANCE		0x55
+
+//////////////////// Public global variables ///////////////////////////////////
 
 // Note names, in the form of chars, go in this queue.
 QueueHandle_t queueUartNote;
@@ -12,18 +15,35 @@ QueueHandle_t queueUartNote;
 // t and p go in this queue.
 QueueHandle_t queueUartSensorCommand;
 
-// Private function prototypes
+// The raw distance values received from the sensor go in this queue.
+QueueHandle_t queueUartSensorDistance;
+
+// The raw temperature values received from the sensor go in this queue.
+QueueHandle_t queueUartSensorTemperature;
+
+//////////////////// Private function prototypes ///////////////////////////////
 
 // Interrupt handler for USART2.
 void USART2_IRQHandler(void);
 
-// Configures the I/O used by the USART.
-void uart_configure_io(void);
+// Interrupt handler for USART3.
+void USART3_IRQHandler(void);
 
-// Private global variables
+//////////////////// Private global variables //////////////////////////////////
 
 // A queue that contains all the chars to transmit to the PC
 static QueueHandle_t queuePcMessage;
+
+enum uartSensorStateEnum {
+	IDLE,
+	WAITING_FOR_DISTANCE_FIRST_BYTE,
+	WAITING_FOR_DISTANCE_SECOND_BYTE,
+	WAITING_FOR_TEMPERATURE
+};
+typedef enum uartSensorStateEnum uartSensorState_t;
+static uartSensorState_t uartSensorState;
+
+//////////////////// Public Function Bodies ////////////////////////////////////
 
 // Initialize the UART connected to the PC, including any pin configuration.
 void uartPcInitialize(void) {
@@ -76,6 +96,12 @@ void uartPcInitialize(void) {
 // Initialize the UART connected to the ultrasonic sensor, including any pin configuration.
 void uartSensorInitialize(void) {
 
+	uartSensorState = IDLE;
+	
+	// Initialize the queues
+	queueUartSensorDistance = xQueueCreate(1, sizeof(uint16_t));
+	queueUartSensorDistance = xQueueCreate(1, sizeof(uint8_t));
+	
 	// Configure the USART3 I/O.
 	pinMode(GPIOB, 10, SPECIAL);
 	pinMode(GPIOB, 11, SPECIAL);
@@ -94,16 +120,16 @@ void uartSensorInitialize(void) {
 	USART3->CR1 &= ~USART_CR1_UE;
 	
 	// Configures Control Register 1.
-	
-	// Enables the Receive Register Not Empty interrupt.
-	// Enables the transmitter.
-	// Enables the receiver.
+	USART3->CR1 = 0;
+	USART3->CR1 |= USART_CR1_RXNEIE; 	// Enables the Receive Register Not Empty interrupt.
+	USART3->CR1 |= USART_CR1_TE;			// Enables the transmitter.
+	USART3->CR1 |= USART_CR1_RE;			// Enables the receiver.
 	
 	// Configures the Control Register 2.
 	// No bits to set in CR2.
 	
 	// Configures the Control Register 3.
-	// Not bits to set the CR3.
+	// No bits to set the CR3.
 	
 	// Configures the baud rate.
 	USART3->BRR = 1667; // Sets a Baud rate of 9600 (assuming a clock rate of 16MHz.
@@ -132,8 +158,37 @@ void uartPcTransmit(const char *data, int length) {
 	
 }
 
-// Transmit a message of exactly one byte to the ultrasonic sensor.
-void uartSensorTransmit(char data);
+// Request a temperature reading from the uart sensor
+void uartSensorRequestTemperature(void) {
+	
+	// Nothing can be requested if we're already waiting for something back.
+	if (uartSensorState != IDLE) {
+		return;
+	}
+	
+	uartSensorState = WAITING_FOR_TEMPERATURE;
+	
+	// Transmit the byte over USART3.
+	USART3->TDR = UART_SENSOR_COMMAND_TEMPERATURE;
+	
+}
+
+// Request a distance reading from the uart sensor
+void uartSensorRequestDistance(void) {
+
+	// Nothing can be requested if we're already waiting for something back.
+	if (uartSensorState != IDLE) {
+		return;
+	}
+	
+	uartSensorState = WAITING_FOR_DISTANCE_FIRST_BYTE;
+	
+	// Transmit the byte over USART3.
+	USART3->TDR = UART_SENSOR_COMMAND_DISTANCE;
+
+}
+
+//////////////////// Private Function Bodies ///////////////////////////////////
 
 // Interrupt handler for USART2.
 void USART2_IRQHandler(void) {
@@ -192,6 +247,40 @@ void USART2_IRQHandler(void) {
 			USART2->CR1 &= ~USART_CR1_TXEIE;
 		} else {
 			USART2->TDR = nextCharacter;
+		}
+	}
+
+}
+
+void USART3_IRQHandler(void) {
+	
+	static uint16_t distance = 0;
+
+	// Determine the type of interrupt.
+	volatile unsigned int interrupt_status = USART3->ISR;
+	
+	// Data has been received over the UART.
+	if ((interrupt_status & USART_ISR_RXNE) != 0) {
+	
+		// Receive the data.
+		char receivedData = (char)(USART3->RDR & USART_RDR_RDR);
+		
+		switch (uartSensorState) {
+			case WAITING_FOR_TEMPERATURE:
+				xQueueSendToBackFromISR(queueUartSensorTemperature, &receivedData, NULL);
+				uartSensorState = IDLE;
+				break;
+			case WAITING_FOR_DISTANCE_FIRST_BYTE:
+				distance = receivedData;
+				uartSensorState = WAITING_FOR_DISTANCE_SECOND_BYTE;
+				break;
+			case WAITING_FOR_DISTANCE_SECOND_BYTE:
+				distance |= receivedData << 8;
+				uartSensorState = IDLE;
+				xQueueSendToBackFromISR(queueUartSensorDistance, &distance, NULL);
+				break;
+			case IDLE:
+				return;
 		}
 	}
 

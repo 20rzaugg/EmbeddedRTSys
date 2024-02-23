@@ -17,6 +17,12 @@ extern QueueHandle_t queueUartNote;
 // t and p go in this queue.
 extern QueueHandle_t queueUartSensorCommand;
 
+// The raw distance values received from the sensor go in this queue.
+extern QueueHandle_t queueUartSensorDistance;
+
+// The raw temperature values received from the sensor go in this queue.
+extern QueueHandle_t queueUartSensorTemperature;
+
 // Public function prototypes
 
 // Initialize the UART connected to the PC, including any pin configuration.
@@ -28,7 +34,10 @@ void uartSensorInitialize(void);
 // Transmit a message of arbitrary length to the connected PC.
 void uartPcTransmit(const char *data, int length);
 
-// Transmit a message of exactly one byte to the ultrasonic sensor.
-void uartSensorTransmit(char data);
+// Request a temperature reading from the uart sensor
+void uartSensorRequestTemperature(void);
+
+// Request a distance reading from the uart sensor
+void uartSensorRequestDistance(void);
 
 #endif
