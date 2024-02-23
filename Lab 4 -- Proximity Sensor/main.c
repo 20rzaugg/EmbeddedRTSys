@@ -35,6 +35,8 @@ void controlLED(void *pvParameters);
 
 void changeTonePitch(void *pvParameters);
 
+void issueSensorCommand(void *pvParameters);
+
 void sendTemperatureMessage(void *pvParameters);
 void sentDistanceMessage(void *pvParameters);
 
@@ -93,6 +95,29 @@ void changeTonePitch(void *pvParameters) {
 
 }
 
+void issueSensorCommand(void *pvParameters) {
+
+	while(1) {
+		
+		char commandChar;
+		xQueueReceive(queueUartSensorCommand, &commandChar, portMAX_DELAY);
+		switch (commandChar) {
+			case 't':
+			case 'T':
+				uartSensorRequestTemperature();
+				break;
+			case 'p':
+			case 'P':
+				uartSensorRequestDistance();
+				break;
+			default:
+				break;
+		}
+		
+	}
+
+}
+
 void sendTemperatureMessage(void *pvParameters) {
 
 	static char* format = "%u deg F\n\r";
@@ -108,14 +133,15 @@ void sendTemperatureMessage(void *pvParameters) {
 		int temperatureF = temperatureC * 9 / 5 + 32;
 		
 		// Create the message string
-		int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, format, temperatureF);
+		int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, format, temperatureC);
 		
 		// Transmit the message
 		uartPcTransmit(message, messageLength);
 	}
 
 }
-void sentDistanceMessage(void *pvParameters) {
+
+void sendDistanceMessage(void *pvParameters) {
 	
 	static char* format = "%u inches\n\r";
 	static char message[PC_MESSAGE_MAX_LENGTH];
@@ -137,8 +163,6 @@ void sentDistanceMessage(void *pvParameters) {
 	}
 
 }
-
-
 
 int TIM4_IRQHandler() {
 	
@@ -177,6 +201,7 @@ int main() {
 	pinMode(GPIOA, LED, OUTPUT);
 	
 	uartPcInitialize();
+	uartSensorInitialize();
 	
 	enableTimer(TIM4, 1, 70, UPCOUNT, 1);
 	TIM4->CR1 |= TIM_CR1_ARPE;
@@ -194,6 +219,21 @@ int main() {
 	
 	BaseType_t t3 = xTaskCreate(changeTonePitch, "changetonePitch", 128, NULL, 1, NULL);
 	if (t3 != pdPASS) {
+		while(1);
+	}
+	
+	BaseType_t t4 = xTaskCreate(issueSensorCommand, "issueSensorCommand", 128, NULL, 1, NULL);
+	if (t4 != pdPASS) {
+		while(1);
+	}
+	
+	BaseType_t t5 = xTaskCreate(sendTemperatureMessage, "sendTemperatureMessage", 128, NULL, 1, NULL);
+	if (t5 != pdPASS) {
+		while(1);
+	}
+	
+	BaseType_t t6 = xTaskCreate(sendDistanceMessage, "sendDistanceMessage", 128, NULL, 1, NULL);
+	if (t6 != pdPASS) {
 		while(1);
 	}
 	

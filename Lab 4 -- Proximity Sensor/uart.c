@@ -99,7 +99,7 @@ void uartSensorInitialize(void) {
 	uartSensorState = IDLE;
 	
 	// Initialize the queues
-	queueUartSensorDistance = xQueueCreate(1, sizeof(uint16_t));
+	queueUartSensorTemperature = xQueueCreate(1, sizeof(uint16_t));
 	queueUartSensorDistance = xQueueCreate(1, sizeof(uint8_t));
 	
 	// Configure the USART3 I/O.
@@ -162,9 +162,9 @@ void uartPcTransmit(const char *data, int length) {
 void uartSensorRequestTemperature(void) {
 	
 	// Nothing can be requested if we're already waiting for something back.
-	if (uartSensorState != IDLE) {
+	/*if (uartSensorState != IDLE) {
 		return;
-	}
+	}*/
 	
 	uartSensorState = WAITING_FOR_TEMPERATURE;
 	
@@ -177,9 +177,9 @@ void uartSensorRequestTemperature(void) {
 void uartSensorRequestDistance(void) {
 
 	// Nothing can be requested if we're already waiting for something back.
-	if (uartSensorState != IDLE) {
+	/*if (uartSensorState != IDLE) {
 		return;
-	}
+	}*/
 	
 	uartSensorState = WAITING_FOR_DISTANCE_FIRST_BYTE;
 	
@@ -271,11 +271,11 @@ void USART3_IRQHandler(void) {
 				uartSensorState = IDLE;
 				break;
 			case WAITING_FOR_DISTANCE_FIRST_BYTE:
-				distance = receivedData;
+				distance = receivedData << 8;
 				uartSensorState = WAITING_FOR_DISTANCE_SECOND_BYTE;
 				break;
 			case WAITING_FOR_DISTANCE_SECOND_BYTE:
-				distance |= receivedData << 8;
+				distance |= receivedData;
 				uartSensorState = IDLE;
 				xQueueSendToBackFromISR(queueUartSensorDistance, &distance, NULL);
 				break;
