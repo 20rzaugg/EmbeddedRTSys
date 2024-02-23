@@ -253,8 +253,6 @@ void USART2_IRQHandler(void) {
 }
 
 void USART3_IRQHandler(void) {
-	
-	static uint16_t distance = 0;
 
 	// Determine the type of interrupt.
 	volatile unsigned int interrupt_status = USART3->ISR;
@@ -263,19 +261,22 @@ void USART3_IRQHandler(void) {
 	if ((interrupt_status & USART_ISR_RXNE) != 0) {
 	
 		// Receive the data.
-		char receivedData = (char)(USART3->RDR & USART_RDR_RDR);
+		volatile unsigned int receivedData = (char)(USART3->RDR & USART_RDR_RDR);
+		uint8_t temperature = 0;
+		uint16_t distance = 0;
 		
 		switch (uartSensorState) {
 			case WAITING_FOR_TEMPERATURE:
-				xQueueSendToBackFromISR(queueUartSensorTemperature, &receivedData, NULL);
+				temperature = (uint8_t)(receivedData);
+				xQueueSendToBackFromISR(queueUartSensorTemperature, &temperature, NULL);
 				uartSensorState = IDLE;
 				break;
 			case WAITING_FOR_DISTANCE_FIRST_BYTE:
-				distance = receivedData << 8;
+				distance = (uint16_t)(receivedData * 256);
 				uartSensorState = WAITING_FOR_DISTANCE_SECOND_BYTE;
 				break;
 			case WAITING_FOR_DISTANCE_SECOND_BYTE:
-				distance |= receivedData;
+				distance += receivedData;
 				uartSensorState = IDLE;
 				xQueueSendToBackFromISR(queueUartSensorDistance, &distance, NULL);
 				break;
