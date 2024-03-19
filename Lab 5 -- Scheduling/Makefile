@@ -1,2 +1,2 @@
 all: main.cpp
-	g++ main.cpp -o scheduler
+	g++ -g main.cpp -o scheduler
