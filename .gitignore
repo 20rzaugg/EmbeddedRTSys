@@ -2,6 +2,7 @@
 *.uvguix.*
 *.d
 *.o
+*.exe
 *.dep
 *.eix
 *.htm
