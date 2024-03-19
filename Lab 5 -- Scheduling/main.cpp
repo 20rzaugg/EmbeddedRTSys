@@ -1,7 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-using namespace std;
+
+#include "Task.h"
+#include "SchedulingAlgorithm.h"
+#include "SchedulingAlgorithmRMA.h"
+#include "Schedule.h"
 
 const std::string helpMessage = "Usage: ./scheduler input.txt output.txt";
 const std::string fileErrorMessage = "Failed to open ";
@@ -32,9 +36,12 @@ int main(int argc, char *argv[]) {
   }
 
   // Construct schedule object from file.
+  Schedule schedule;
   inputFileStream.close();
 
   // Run RM simulation.
+  SchedulingAlgorithmRMA rma;
+  schedule.Run(rma);
 
   // Run EDF simulation.
 

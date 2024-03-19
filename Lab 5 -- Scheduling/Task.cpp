@@ -1,8 +1,9 @@
 #include "Task.h"
 
-Task::Task(bool isPeriodic, int period, int executionTime) {
-  this->isPeriodic = isPeriodic;
-  this->period = period;
+Task::Task(char taskId, bool isPeriodic, int period, int executionTime) {
+  this->taskId        = taskId;
+  this->isPeriodic    = isPeriodic;
+  this->period        = period;
   this->executionTime = executionTime;
 }
 
@@ -35,6 +36,10 @@ void Task::Tick() {
 
 }
 
+char Task::GetTaskId() {
+  return this->taskId;
+}
+
 bool Task::GetEnabled() {
   return isEnabled;
 }
@@ -51,8 +56,12 @@ bool Task::GetRunning() {
   return isEnabled && isRunning;
 }
 
-bool Task::SetRunning(bool isRunning) {
+void Task::SetRunning(bool isRunning) {
   this->isRunning = isEnabled && isRunning;
+}
+
+int Task::GetPeriod() {
+  return this->period;
 }
 
 void Task::Disable() {

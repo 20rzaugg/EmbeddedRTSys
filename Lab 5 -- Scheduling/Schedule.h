@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Task.h"
+#include "SchedulingAlgorithm.h"
 
 class Schedule
 {
@@ -15,20 +16,18 @@ private:
   // The time that the schedule lasts for.
   int duration;
 
+  // Gets the schedule's current active task.
+  Task *GetRunningTask();
+
+  // Preempts a running task with another non-running task.
+  void Preempt(Task *preempted, Task *preemptor);
+
 public:
-  Schedule(/* args */);
+  Schedule();
   ~Schedule();
 
-  // Runs the task schedule.
-  void Run();
+  // Runs the task schedule with the given scheduling algorithm.
+  void Run(SchedulingAlgorithm &schedulingAlgorithm);
 };
-
-Schedule::Schedule(/* args */)
-{
-}
-
-Schedule::~Schedule()
-{
-}
 
 #endif

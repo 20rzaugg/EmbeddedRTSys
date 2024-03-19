@@ -5,6 +5,10 @@ class Task
 {
 private:
 
+  // The unique ID of the task. Uniqueness in not enforced by any code, so be
+  // careful.
+  char taskId;
+
   // Whether the task is periodic.
   bool isPeriodic;
 
@@ -45,12 +49,17 @@ private:
   
 public:
 
-  Task::Task(bool isPeriodic, int period, int executionTime);
+  static const int highestPossiblePeriod = 10000;
+
+  Task(char taskId, bool isPeriodic, int period, int executionTime);
   ~Task();
 
   // Moves the task forward in time by one millisecond. Updates everything
   // about the task's state.
   void Tick();
+
+  // Gets the unique task ID.
+  char GetTaskId();
 
   // Gets whether the task is enabled.
   bool GetEnabled();
@@ -65,7 +74,10 @@ public:
   bool GetRunning();
 
   // Sets whether the task is currently running.
-  bool SetRunning(bool isRunning);
+  void SetRunning(bool isRunning);
+
+  // Gets the period of the task.
+  int GetPeriod();
 
 };
 
