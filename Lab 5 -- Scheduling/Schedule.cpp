@@ -33,15 +33,18 @@ void Schedule::Run(SchedulingAlgorithm &schedulingAlgorithm) {
     this->currentTime++
   ) {
 
+    for (Task &task : tasks) {
+      task.Check();
+    }
+
     // Determine if the current task needs to be switched.
     Task *highestPriorityTask = schedulingAlgorithm.GetHighestPriorityTask(this->tasks);
+    SwitchTask(this->runningTask, highestPriorityTask);
 
     // Process each task.
     for (Task &task : tasks) {
       task.Tick();
     }
-
-    SwitchTask(this->runningTask, highestPriorityTask);
 
   }
 

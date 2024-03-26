@@ -2,9 +2,10 @@
 Beginning run with Rate-Monotonic Analysis (RMA) algorithm.
 
 [time=0]	Switching from idle task to Task A.
-[time=4]	Task A finished execution ahead of its deadline.
-[time=4]	Switching from Task A to idle task.
-[time=5]	Switching from idle task to Task A.
-[time=9]	Task A finished execution ahead of its deadline.
-[time=9]	Switching from Task A to idle task.
+[time=3]	Task A finished execution ahead of its deadline.
+[time=3]	Switching from Task A to idle task.
+[time=4]	Switching from idle task to Task A.
+[time=7]	Task A finished execution ahead of its deadline.
+[time=7]	Switching from Task A to idle task.
+[time=8]	Switching from idle task to Task A.
 Simulation has ended. Goodbye!

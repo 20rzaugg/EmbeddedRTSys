@@ -54,8 +54,11 @@ public:
   Task(char taskId, bool isPeriodic, int period, int executionTime);
   ~Task();
 
-  // Moves the task forward in time by one millisecond. Updates everything
-  // about the task's state.
+  // Checks the task's timing information and updates its state (finished,
+  // running, etc.) accordingly.
+  void Check();
+
+  // Moves the task forward in time by one millisecond. 
   void Tick();
 
   // Gets the unique task ID.

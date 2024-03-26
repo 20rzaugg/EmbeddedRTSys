@@ -18,6 +18,23 @@ Task::~Task() {
   
 }
 
+// Checks the task's timing information and updates its state (finished,
+// running, etc.) accordingly.
+void Task::Check() {
+  if (!isEnabled) {
+    return;
+  }
+
+  if (GetRunning() && GetFinished()) {
+    Finish();
+  }
+
+  if (nextDeadlineRelative <= 0) {
+    OnDeadline();
+  }
+
+}
+
 void Task::Tick() {
 
   if (!isEnabled) {
@@ -25,19 +42,11 @@ void Task::Tick() {
   }
 
   // If the task is running and not yet done,
-  if (GetRunning()) {
-    // If the task just finished,
-    if (GetFinished()) {
-      Finish();
-    } else {
-      workLeft = workLeft - 1;
-    }
+  if (GetRunning() && !GetFinished()) {
+    workLeft = workLeft - 1;
   }
 
-  // If the task's deadline is up,
-  if (nextDeadlineRelative <= 0) {
-    OnDeadline();
-  } else {
+  if (nextDeadlineRelative > 0) {
     // The deadline draws nearer.
     nextDeadlineRelative = nextDeadlineRelative - 1;
   }
