@@ -11,6 +11,9 @@ Schedule::Schedule() {
   Task task = Task('A', true, 4, 3);
   this->tasks.push_back(task);
 
+  task = Task('B', true, 5, 2);
+  this->tasks.push_back(task);
+
   this->duration = 10;
 
   this->runningTask = nullptr;
