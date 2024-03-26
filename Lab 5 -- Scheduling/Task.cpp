@@ -10,8 +10,8 @@ Task::Task(char taskId, bool isPeriodic, int period, int executionTime) {
 
   this->isEnabled             = true;
   this->isRunning             = false;
-  this->workLeft              = executionTime;
-  this->nextDeadlineRelative  = period;
+  this->workLeft              = 0;
+  this->nextDeadlineRelative  = 0;
 }
 
 Task::~Task() {
@@ -81,12 +81,22 @@ int Task::GetPeriod() const {
   return this->period;
 }
 
+int Task::GetRelativeDeadline() const {
+  return this->nextDeadlineRelative;
+}
+
+int Task::GetWorkLeft() const {
+  return this->workLeft;
+}
+
 void Task::Disable() {
   isEnabled = false;
 }
 
 void Task::Launch() {
   workLeft = executionTime;
+  RenewDeadline();
+  Logger::Instance()->LogTaskLaunch(this);
 }
 
 void Task::Finish() {
@@ -101,7 +111,6 @@ void Task::OnDeadline() {
     Logger::Instance()->LogMissedDeadline(*this);
   } else {
     if (isPeriodic) {
-      RenewDeadline();
       Launch();
     } else {
       // Aperiodic tasks only run once.

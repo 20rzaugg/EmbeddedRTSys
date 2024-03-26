@@ -1,11 +1,14 @@
 ##### NEW RUN #####
 Beginning run with Rate-Monotonic Analysis (RMA) algorithm.
 
+[time=0]	Launching Task A (Deadline in 4 ticks, 3 work to do).
 [time=0]	Switching from idle task to Task A.
 [time=3]	Task A finished execution ahead of its deadline.
 [time=3]	Switching from Task A to idle task.
+[time=4]	Launching Task A (Deadline in 4 ticks, 3 work to do).
 [time=4]	Switching from idle task to Task A.
 [time=7]	Task A finished execution ahead of its deadline.
 [time=7]	Switching from Task A to idle task.
+[time=8]	Launching Task A (Deadline in 4 ticks, 3 work to do).
 [time=8]	Switching from idle task to Task A.
 Simulation has ended. Goodbye!

@@ -82,6 +82,10 @@ public:
   // Gets the period of the task.
   int GetPeriod() const;
 
+  int GetRelativeDeadline() const;
+
+  int GetWorkLeft() const;
+
 };
 
 #endif

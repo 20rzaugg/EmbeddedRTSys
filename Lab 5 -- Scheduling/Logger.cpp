@@ -46,6 +46,18 @@ void Logger::LogRunBeginning() const {
   );
 }
 
+// Logs a task being launched.
+void Logger::LogTaskLaunch(const Task *task) const {
+  PrintTimestamp();
+  fprintf(
+    logFile,
+    "Launching Task %c (Deadline in %d ticks, %d work to do).\n",
+    task->GetTaskId(),
+    task->GetRelativeDeadline(),
+    task->GetWorkLeft()
+  );
+}
+
 void Logger::LogTaskSwitch(
   const Task *from,
   const Task *to

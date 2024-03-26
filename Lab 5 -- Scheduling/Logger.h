@@ -37,6 +37,9 @@ public:
   // Logs that a task run is beginning.
   void LogRunBeginning() const;
 
+  // Logs a task being launched.
+  void LogTaskLaunch(const Task *task) const;
+
   // Logs a task switch.
   void LogTaskSwitch(
     const Task *from,
