@@ -2,21 +2,55 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <cstdio>
 
 #include "SchedulingAlgorithm.h"
 #include "Logger.h"
 
-Schedule::Schedule() {
+Schedule::Schedule(const char *inputFilePath) {
 
-  Task task = Task('A', true, 4, 3);
-  this->tasks.push_back(task);
+  FILE *inputFile = fopen(inputFilePath, "r");
+  if (inputFile == nullptr) {
+    this->openedFile = false;
+    return;
+  }
+  this->openedFile = true;
 
-  task = Task('B', true, 5, 2);
-  this->tasks.push_back(task);
+  // Scan in first two lines of input file (simulation duration and task
+  // count).
+  int periodicTaskCount;
+  fscanf(inputFile, " %d ", &periodicTaskCount);
+  fscanf(inputFile, " %d ", &(this->duration));
 
-  this->duration = 10;
+  // Creates each periodic task.
+  for (int i = 0; i < periodicTaskCount; i++) {
+    char taskId;
+    int taskExecutionTime;
+    int taskPeriod;
+    fscanf(inputFile, "%c , %d , %d ", &taskId, &taskExecutionTime, &taskPeriod);
+    Task task = Task(taskId, true, 0, taskPeriod, taskExecutionTime);
+    this->tasks.push_back(task);
+  }
 
-  this->runningTask = nullptr;
+  // Creates aperiodic tasks.
+  int aperiodicTaskCount;
+  fscanf(inputFile, " %d ", &aperiodicTaskCount);
+  for (int i = 0; i < aperiodicTaskCount; i++) {
+    char taskId;
+    int taskExecutionTime;
+    int taskLaunchOffset;
+    fscanf(inputFile, "%c, %d, %d ", &taskId, &taskExecutionTime, &taskLaunchOffset);
+    Task task = Task(
+      taskId, 
+      false, 
+      taskLaunchOffset, 
+      500 - taskLaunchOffset, 
+      taskExecutionTime
+    );
+    this->tasks.push_back(task);
+  }
+
+  fclose(inputFile);
 
 }
 
@@ -28,6 +62,8 @@ void Schedule::Run(SchedulingAlgorithm &schedulingAlgorithm) {
 
   Logger::Instance()->LogRunBeginning();
   Logger::Instance()->LogTickBreak();
+
+  this->runningTask = nullptr;
 
   // Loop until simulation is over.
   for (
@@ -53,6 +89,10 @@ void Schedule::Run(SchedulingAlgorithm &schedulingAlgorithm) {
 
   Logger::Instance()->LogRunEnding();
   
+}
+
+bool Schedule::GetOpenedFile() {
+  return this->openedFile;
 }
 
 int Schedule::GetCurrentTime() const {

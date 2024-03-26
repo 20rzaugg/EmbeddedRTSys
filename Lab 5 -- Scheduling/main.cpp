@@ -20,19 +20,12 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  // Attempt to open input file.
-  std::ifstream inputFileStream;
-  inputFileStream.open(argv[1]);
-  if (!inputFileStream.is_open()) {
+  Schedule schedule = Schedule(argv[1]);
+  if (!schedule.GetOpenedFile()) {
     std::cout << fileErrorMessage << argv[1] << std::endl;
     return 0;
   }
 
-  // Construct schedule object from file.
-  Schedule schedule;
-  inputFileStream.close();
-
-  // Run RM simulation.
   SchedulingAlgorithmRMA rma;
 
   // Attempt to open output file.

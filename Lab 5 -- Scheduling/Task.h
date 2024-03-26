@@ -19,14 +19,24 @@ private:
   // The time that the task will take to execute
   int executionTime;
 
+  // The amount of time between the beginning of the simulation and the task's
+  // first launch.
+  int launchOffset;
+
   // Whether this task is allowed to run.
   bool isEnabled;
+
+  // Whether this task has launched at any point in the past.
+  bool hasLaunched;
 
   // Whether this task is currently running.
   bool isRunning;
 
   // The amount of work left to do on this task.
   int workLeft;
+
+  // The amount of time until this task is launched for this first time.
+  int launchRelative;
 
   // The time remaining until the task's next deadline.
   int nextDeadlineRelative;
@@ -51,7 +61,13 @@ public:
 
   static const int highestPossiblePeriod = 10000;
 
-  Task(char taskId, bool isPeriodic, int period, int executionTime);
+  Task(
+    char taskId, 
+    bool isPeriodic,
+    int launchOffset, 
+    int period, 
+    int executionTime
+  );
   ~Task();
 
   // Checks the task's timing information and updates its state (finished,
@@ -60,6 +76,10 @@ public:
 
   // Moves the task forward in time by one millisecond. 
   void Tick();
+
+  // Resets the task to its initial state, so it can be used for another 
+  // simulation.
+  void Reset();
 
   // Gets the unique task ID.
   char GetTaskId() const;
@@ -78,6 +98,9 @@ public:
 
   // Sets whether the task is currently running.
   void SetRunning(bool isRunning);
+
+  // Gets whether the task is periodic.
+  bool GetPeriodic() const;
 
   // Gets the period of the task.
   int GetPeriod() const;

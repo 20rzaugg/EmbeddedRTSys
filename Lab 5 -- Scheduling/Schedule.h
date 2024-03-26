@@ -9,6 +9,8 @@
 class Schedule
 {
 private:
+
+  bool openedFile;
   
   // All the tasks that are to be scheduled.
   std::vector<Task> tasks;
@@ -29,8 +31,10 @@ private:
   void SwitchTask(Task *from, Task *to);
 
 public:
-  Schedule();
+  Schedule(const char* inputFilePath);
   ~Schedule();
+
+  bool GetOpenedFile();
 
   // Runs the task schedule with the given scheduling algorithm.
   void Run(SchedulingAlgorithm &schedulingAlgorithm);

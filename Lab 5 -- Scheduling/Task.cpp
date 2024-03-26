@@ -2,16 +2,19 @@
 
 #include "Logger.h"
 
-Task::Task(char taskId, bool isPeriodic, int period, int executionTime) {
+Task::Task(
+  char taskId, 
+  bool isPeriodic, 
+  int launchOffset,
+  int period, 
+  int executionTime
+) {
   this->taskId        = taskId;
   this->isPeriodic    = isPeriodic;
+  this->launchOffset  = launchOffset;
   this->period        = period;
   this->executionTime = executionTime;
-
-  this->isEnabled             = true;
-  this->isRunning             = false;
-  this->workLeft              = 0;
-  this->nextDeadlineRelative  = 0;
+  this->Reset();
 }
 
 Task::~Task() {
@@ -23,6 +26,10 @@ Task::~Task() {
 void Task::Check() {
   if (!isEnabled) {
     return;
+  }
+
+  if (!this->hasLaunched && this->launchRelative <= 0) {
+    this->Launch();
   }
 
   if (GetRunning() && GetFinished()) {
@@ -41,6 +48,10 @@ void Task::Tick() {
     return;
   }
 
+  if (!hasLaunched) {
+    this->launchRelative = this->launchRelative - 1;
+  }
+
   // If the task is running and not yet done,
   if (GetRunning() && !GetFinished()) {
     workLeft = workLeft - 1;
@@ -51,6 +62,15 @@ void Task::Tick() {
     nextDeadlineRelative = nextDeadlineRelative - 1;
   }
 
+}
+
+void Task::Reset() {
+  this->isEnabled             = true;
+  this->hasLaunched           = false;
+  this->isRunning             = false;
+  this->workLeft              = 0;
+  this->launchRelative        = this->launchOffset;
+  this->nextDeadlineRelative  = highestPossiblePeriod;
 }
 
 char Task::GetTaskId() const {
@@ -77,6 +97,10 @@ void Task::SetRunning(bool isRunning) {
   this->isRunning = this->isEnabled && isRunning;
 }
 
+bool Task::GetPeriodic() const {
+  return this->isPeriodic;
+}
+
 int Task::GetPeriod() const {
   return this->period;
 }
@@ -94,6 +118,7 @@ void Task::Disable() {
 }
 
 void Task::Launch() {
+  hasLaunched = true;
   workLeft = executionTime;
   RenewDeadline();
   Logger::Instance()->LogTaskLaunch(this);
