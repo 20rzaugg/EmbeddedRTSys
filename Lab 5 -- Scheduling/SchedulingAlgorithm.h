@@ -16,7 +16,10 @@ private:
 public:
   
   // Determines the highest-priority task in a set.
-  virtual Task *GetHighestPriorityTask(std::vector<Task> &tasks) = 0;
+  virtual Task *GetHighestPriorityTask(std::vector<Task> &tasks) const = 0;
+
+  // Gets a human-readable name for the scheduling algorithm.
+  virtual const char *GetHumanReadableName() const = 0;
 
 };
 

@@ -1,5 +1,7 @@
 #include "Task.h"
 
+#include "Logger.h"
+
 Task::Task(char taskId, bool isPeriodic, int period, int executionTime) {
   this->taskId        = taskId;
   this->isPeriodic    = isPeriodic;
@@ -22,42 +24,43 @@ void Task::Tick() {
     return;
   }
 
-  // The deadline draws nearer.
-  nextDeadlineRelative = nextDeadlineRelative - 1;
-
   // If the task is running and not yet done,
-  if (GetRunning() && !GetFinished()) {
-    workLeft = workLeft - 1;
+  if (GetRunning()) {
     // If the task just finished,
     if (GetFinished()) {
       Finish();
+    } else {
+      workLeft = workLeft - 1;
     }
   }
 
   // If the task's deadline is up,
   if (nextDeadlineRelative <= 0) {
     OnDeadline();
+  } else {
+    // The deadline draws nearer.
+    nextDeadlineRelative = nextDeadlineRelative - 1;
   }
 
 }
 
-char Task::GetTaskId() {
+char Task::GetTaskId() const {
   return this->taskId;
 }
 
-bool Task::GetEnabled() {
+bool Task::GetEnabled() const {
   return isEnabled;
 }
 
-bool Task::GetReady() {
+bool Task::GetReady() const {
   return isEnabled && workLeft > 0;
 }
 
-bool Task::GetFinished() {
+bool Task::GetFinished() const {
   return isEnabled && workLeft <= 0;
 }
 
-bool Task::GetRunning() {
+bool Task::GetRunning() const {
   return isEnabled && isRunning;
 }
 
@@ -65,7 +68,7 @@ void Task::SetRunning(bool isRunning) {
   this->isRunning = this->isEnabled && isRunning;
 }
 
-int Task::GetPeriod() {
+int Task::GetPeriod() const {
   return this->period;
 }
 
@@ -79,13 +82,14 @@ void Task::Launch() {
 
 void Task::Finish() {
   isRunning = false;
+  Logger::Instance()->LogFinishedTask(*this);
 }
 
 void Task::OnDeadline() {
 
   if (workLeft > 0) {
     Disable();
-    // Log missed deadline.
+    Logger::Instance()->LogMissedDeadline(*this);
   } else {
     if (isPeriodic) {
       RenewDeadline();

@@ -6,6 +6,7 @@
 #include "SchedulingAlgorithm.h"
 #include "SchedulingAlgorithmRMA.h"
 #include "Schedule.h"
+#include "Logger.h"
 
 const std::string helpMessage = "Usage: ./scheduler input.txt output.txt";
 const std::string fileErrorMessage = "Failed to open ";
@@ -27,20 +28,20 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  // Attempt to open output file.
-  std::ofstream outputFileStream;
-  outputFileStream.open("output.txt");
-  if (!outputFileStream.is_open()) {
-    std::cout << fileErrorMessage << argv[2] << std::endl;
-    return 0;
-  }
-
   // Construct schedule object from file.
   Schedule schedule;
   inputFileStream.close();
 
   // Run RM simulation.
   SchedulingAlgorithmRMA rma;
+
+  // Attempt to open output file.
+  Logger logger(argv[2], &schedule, &rma);
+  if (!logger.GetFileOpened()) {
+    std::cout << fileErrorMessage << argv[2] << std::endl;
+    return 0;
+  }
+
   schedule.Run(rma);
 
   // Run EDF simulation.
@@ -48,8 +49,6 @@ int main(int argc, char *argv[]) {
   // Run LLF simulation.
 
   // Close everything down.
-  outputFileStream << "Hello World." << std::endl;
-  outputFileStream.close();
 
   return 0;
 }

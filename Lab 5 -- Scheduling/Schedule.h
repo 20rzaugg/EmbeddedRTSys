@@ -13,8 +13,14 @@ private:
   // All the tasks that are to be scheduled.
   std::vector<Task> tasks;
 
+  // The task that is currently running.
+  Task *runningTask;
+
   // The time that the schedule lasts for.
   int duration;
+
+  // The current time that the scheduler is simulating.
+  int currentTime;
 
   // Gets the schedule's current active task.
   Task *GetRunningTask();
@@ -28,6 +34,8 @@ public:
 
   // Runs the task schedule with the given scheduling algorithm.
   void Run(SchedulingAlgorithm &schedulingAlgorithm);
+
+  int GetCurrentTime() const;
 };
 
 #endif

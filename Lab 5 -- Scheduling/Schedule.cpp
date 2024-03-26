@@ -4,13 +4,16 @@
 #include <iostream>
 
 #include "SchedulingAlgorithm.h"
+#include "Logger.h"
 
 Schedule::Schedule() {
 
   Task task = Task('A', true, 4, 3);
   this->tasks.push_back(task);
 
-  this->duration = 5;
+  this->duration = 10;
+
+  this->runningTask = nullptr;
 
 }
 
@@ -20,41 +23,38 @@ Schedule::~Schedule() {
 
 void Schedule::Run(SchedulingAlgorithm &schedulingAlgorithm) {
 
-  // Initialize absolute time.
-  int currentTime = 0;
+  Logger::Instance()->LogRunBeginning();
+  Logger::Instance()->LogTickBreak();
 
   // Loop until simulation is over.
-  for (int currentTime = 0; currentTime < duration; currentTime++)
-  {
+  for (
+    this->currentTime = 0; 
+    this->currentTime < this->duration; 
+    this->currentTime++
+  ) {
 
     // Determine if the current task needs to be switched.
-    Task *runningTask = GetRunningTask();
     Task *highestPriorityTask = schedulingAlgorithm.GetHighestPriorityTask(this->tasks);
-    SwitchTask(runningTask, highestPriorityTask);
 
     // Process each task.
     for (Task &task : tasks) {
       task.Tick();
     }
+
+    SwitchTask(this->runningTask, highestPriorityTask);
+
   }
+
+  Logger::Instance()->LogRunEnding();
   
 }
 
+int Schedule::GetCurrentTime() const {
+  return this->currentTime;
+}
+
 Task *Schedule::GetRunningTask() {
-
-  Task *runningTask = nullptr;
-  for (Task &task : tasks) {
-    if (task.GetRunning()) {
-      if (runningTask == nullptr) {
-        runningTask = &task;
-      } else {
-        throw std::runtime_error("Schedule has more than one running task.");
-      }
-    }
-  }
-
-  return runningTask;
-
+  return this->runningTask;
 }
 
 void Schedule::SwitchTask(Task *from, Task *to) {
@@ -67,6 +67,8 @@ void Schedule::SwitchTask(Task *from, Task *to) {
     to->SetRunning(true);
   }
 
-  // TODO: Report the task switch.
+  this->runningTask = to;
+
+  Logger::Instance()->LogTaskSwitch(from, to);
 
 }

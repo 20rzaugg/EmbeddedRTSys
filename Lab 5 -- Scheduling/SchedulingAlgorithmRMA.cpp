@@ -3,7 +3,9 @@
 #include "Task.h"
 #include "SchedulingAlgorithmRMA.h"
 
-Task *SchedulingAlgorithmRMA::GetHighestPriorityTask(std::vector<Task> &tasks) {
+const char humanReadableName[] = "Rate-Monotonic Analysis (RMA)";
+
+Task *SchedulingAlgorithmRMA::GetHighestPriorityTask(std::vector<Task> &tasks) const {
 
   // Find the ready task that has the shortest period.
   int shortestPeriod = Task::highestPossiblePeriod;
@@ -17,4 +19,8 @@ Task *SchedulingAlgorithmRMA::GetHighestPriorityTask(std::vector<Task> &tasks) {
 
   return shortestPeriodTask;
 
+}
+
+const char *SchedulingAlgorithmRMA::GetHumanReadableName() const {
+  return humanReadableName;
 }

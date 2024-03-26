@@ -59,25 +59,25 @@ public:
   void Tick();
 
   // Gets the unique task ID.
-  char GetTaskId();
+  char GetTaskId() const;
 
   // Gets whether the task is enabled.
-  bool GetEnabled();
+  bool GetEnabled() const;
 
   // Gets whether the task is ready to run.
-  bool GetReady();
+  bool GetReady() const;
 
   // Gets whether the task has finished.
-  bool GetFinished();
+  bool GetFinished() const;
 
   // Gets whether the task is currently running.
-  bool GetRunning();
+  bool GetRunning() const;
 
   // Sets whether the task is currently running.
   void SetRunning(bool isRunning);
 
   // Gets the period of the task.
-  int GetPeriod();
+  int GetPeriod() const;
 
 };
 
