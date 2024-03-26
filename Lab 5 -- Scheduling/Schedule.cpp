@@ -7,6 +7,11 @@
 
 Schedule::Schedule() {
 
+  Task task = Task('A', true, 4, 3);
+  this->tasks.push_back(task);
+
+  this->duration = 5;
+
 }
 
 Schedule::~Schedule() {
@@ -21,26 +26,16 @@ void Schedule::Run(SchedulingAlgorithm &schedulingAlgorithm) {
   // Loop until simulation is over.
   for (int currentTime = 0; currentTime < duration; currentTime++)
   {
-    
-    // Process each task.
-    for (Task task : tasks) {
-      task.Tick();
-    }
 
     // Determine if the current task needs to be switched.
-    Task *runningTask= GetRunningTask();
+    Task *runningTask = GetRunningTask();
     Task *highestPriorityTask = schedulingAlgorithm.GetHighestPriorityTask(this->tasks);
-    if (
-      runningTask               != nullptr                  &&
-      highestPriorityTask       != nullptr                  &&
-      runningTask->GetTaskId()  == runningTask->GetTaskId()
-    ) {
-      
-    } else {
-      // The currently-running tasks needs to be preempted.
-      Preempt(runningTask, highestPriorityTask);
-    }
+    SwitchTask(runningTask, highestPriorityTask);
 
+    // Process each task.
+    for (Task &task : tasks) {
+      task.Tick();
+    }
   }
   
 }
@@ -48,7 +43,7 @@ void Schedule::Run(SchedulingAlgorithm &schedulingAlgorithm) {
 Task *Schedule::GetRunningTask() {
 
   Task *runningTask = nullptr;
-  for (Task task : tasks) {
+  for (Task &task : tasks) {
     if (task.GetRunning()) {
       if (runningTask == nullptr) {
         runningTask = &task;
@@ -62,14 +57,16 @@ Task *Schedule::GetRunningTask() {
 
 }
 
-void Schedule::Preempt(Task *preempted, Task *preemptor) {
+void Schedule::SwitchTask(Task *from, Task *to) {
 
-  if (preempted != nullptr) {
-    preempted->SetRunning(false);
+  if (from != nullptr) {
+    from->SetRunning(false);
   }
-  if (preemptor != nullptr) {
-    preemptor->SetRunning(true);
+
+  if (to != nullptr) {
+    to->SetRunning(true);
   }
-  // Log the preemption.
+
+  // TODO: Report the task switch.
 
 }

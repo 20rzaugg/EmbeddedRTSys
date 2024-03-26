@@ -5,6 +5,11 @@ Task::Task(char taskId, bool isPeriodic, int period, int executionTime) {
   this->isPeriodic    = isPeriodic;
   this->period        = period;
   this->executionTime = executionTime;
+
+  this->isEnabled             = true;
+  this->isRunning             = false;
+  this->workLeft              = executionTime;
+  this->nextDeadlineRelative  = period;
 }
 
 Task::~Task() {
@@ -57,7 +62,7 @@ bool Task::GetRunning() {
 }
 
 void Task::SetRunning(bool isRunning) {
-  this->isRunning = isEnabled && isRunning;
+  this->isRunning = this->isEnabled && isRunning;
 }
 
 int Task::GetPeriod() {

@@ -19,8 +19,8 @@ private:
   // Gets the schedule's current active task.
   Task *GetRunningTask();
 
-  // Preempts a running task with another non-running task.
-  void Preempt(Task *preempted, Task *preemptor);
+  // Switches from a running task to a non-running task.
+  void SwitchTask(Task *from, Task *to);
 
 public:
   Schedule();

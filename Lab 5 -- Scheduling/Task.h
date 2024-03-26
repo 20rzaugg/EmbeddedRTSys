@@ -20,10 +20,10 @@ private:
   int executionTime;
 
   // Whether this task is allowed to run.
-  int isEnabled;
+  bool isEnabled;
 
   // Whether this task is currently running.
-  int isRunning;
+  bool isRunning;
 
   // The amount of work left to do on this task.
   int workLeft;
