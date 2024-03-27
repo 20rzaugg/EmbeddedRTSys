@@ -20,9 +20,9 @@ Task *SchedulingAlgorithmLLF::GetHighestPriorityTask(std::vector<Task> &tasks) c
       leastLaxityTask = &task;
     }
   }
-  return earliestDeadlineTask;
+  return leastLaxityTask;
 }
 
-const char *SchedulingAlgorithmRMA::GetHumanReadableName() const {
+const char *SchedulingAlgorithmLLF::GetHumanReadableName() const {
   return humanReadableName;
 }

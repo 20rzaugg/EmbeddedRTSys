@@ -23,6 +23,6 @@ Task *SchedulingAlgorithmEDF::GetHighestPriorityTask(std::vector<Task> &tasks) c
   return earliestDeadlineTask;
 }
 
-const char *SchedulingAlgorithmRMA::GetHumanReadableName() const {
+const char *SchedulingAlgorithmEDF::GetHumanReadableName() const {
   return humanReadableName;
 }

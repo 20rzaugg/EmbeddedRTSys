@@ -5,12 +5,18 @@
 #include "Task.h"
 #include "SchedulingAlgorithm.h"
 #include "SchedulingAlgorithmRMA.h"
+#include "SchedulingAlgorithmEDF.h"
+#include "SchedulingAlgorithmLLF.h"
 #include "Schedule.h"
 #include "Logger.h"
 
 const std::string helpMessage = "Usage: ./scheduler input.txt output.txt";
 const std::string fileErrorMessage = "Failed to open ";
 const int argumentCount = 2;  // Doesn't count the program name.
+
+//#define ALGORITHM_RMA
+//#define ALGORITHM_EDF
+#define ALGORITHM_LLF
 
 int main(int argc, char *argv[]) {
 
@@ -26,22 +32,46 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  SchedulingAlgorithmRMA rma;
+  #ifdef ALGORITHM_RMA
+    SchedulingAlgorithmRMA rma;
 
-  // Attempt to open output file.
-  Logger logger(argv[2], &schedule, &rma);
-  if (!logger.GetFileOpened()) {
-    std::cout << fileErrorMessage << argv[2] << std::endl;
-    return 0;
-  }
+    // Attempt to open output file.
+    Logger logger(argv[2], &schedule, &rma);
+    if (!logger.GetFileOpened()) {
+      std::cout << fileErrorMessage << argv[2] << std::endl;
+      return 0;
+    }
 
-  schedule.Run(rma);
+    schedule.Run(rma);
+  #endif
 
-  // Run EDF simulation.
+  #ifdef ALGORITHM_EDF
+    SchedulingAlgorithmEDF edf;
 
-  // Run LLF simulation.
+    // Attempt to open output file.
+    Logger logger(argv[2], &schedule, &edf);
+    if (!logger.GetFileOpened()) {
+      std::cout << fileErrorMessage << argv[2] << std::endl;
+      return 0;
+    }
 
-  // Close everything down.
+    schedule.Run(edf);
 
+  #endif
+
+  #ifdef ALGORITHM_LLF
+    
+    SchedulingAlgorithmLLF llf;
+
+    // Attempt to open output file.
+    Logger logger(argv[2], &schedule, &llf);
+    if (!logger.GetFileOpened()) {
+      std::cout << fileErrorMessage << argv[2] << std::endl;
+      return 0;
+    }
+
+    schedule.Run(llf);
+  
+  #endif
   return 0;
 }
