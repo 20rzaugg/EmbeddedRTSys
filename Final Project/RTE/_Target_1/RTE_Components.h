@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'Piano_Lab3' 
+ * Project: 'Proximity_Lab4' 
  * Target:  'Target 1' 
  */
 
