@@ -24,7 +24,7 @@ QueueHandle_t queueUartSensorTemperature;
 //////////////////// Private function prototypes ///////////////////////////////
 
 // Interrupt handler for USART2.
-void USART2_IRQHandler(void);
+void USART1_IRQHandler(void);
 
 // Interrupt handler for USART3.
 void USART3_IRQHandler(void);
@@ -49,8 +49,8 @@ static uartSensorState_t uart3SensorState;
 void uartPcInitialize(void) {
 	
 	// Initialize the queues.
-	queuePcMessage 					= xQueueCreate(PC_MESSAGE_MAX_LENGTH, sizeof(char));
-	queueUartNote 					= xQueueCreate(1, sizeof(char));
+	queuePcMessage 			= xQueueCreate(PC_MESSAGE_MAX_LENGTH, sizeof(char));
+	queueUartNote 			= xQueueCreate(1, sizeof(char));
 	queueUartSensorCommand 	= xQueueCreate(1, sizeof(char));
 
 	// Configure the USART2 I/O.
