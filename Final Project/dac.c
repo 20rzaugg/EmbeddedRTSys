@@ -22,7 +22,7 @@ void DACinit_ch1(uint32_t mode, uint32_t trigger) {
     //enable DAC channel 1
     DAC->CR |= DAC_CR_EN1;
 		
-		//set GPIOA 4 to analog mode
+	//set GPIOA 4 to analog mode
     pinMode(GPIOA, 4, ANALOG);
 }
 

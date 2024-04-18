@@ -93,8 +93,9 @@ void uartPcInitialize(void) {
 
 }
 
-// Initialize the UART connected to the ultrasonic sensor, including any pin configuration.
-void uartSensorInitialize(void) {
+// Initialize the USART3 connected to the ultrasonic sensor, including any pin configuration.
+// TX is on PB10, RX is on PB11.
+void uartSensor1Initialize(void) {
 
 	uartSensorState = IDLE;
 	
@@ -139,7 +140,55 @@ void uartSensorInitialize(void) {
 	
 	// Enables USART3 interrupts.
 	NVIC_EnableIRQ(USART3_IRQn);
+}
 
+// Initialize the USART1 connected to the ultrasonic sensor, including any pin configuration.
+// TX is on PA9, RX is on PA10.
+void uartSensor2Initialize(void) {
+
+	uartSensorState = IDLE;
+	
+	// Initialize the queues
+	queueUartSensorTemperature = xQueueCreate(1, sizeof(uint8_t));
+	queueUartSensorDistance = xQueueCreate(1, sizeof(uint16_t));
+	
+	// Configure the USART1 I/O.
+	pinMode(GPIOA, 9, SPECIAL);
+	pinMode(GPIOA, 10, SPECIAL);
+	setOutputType(GPIOA, 9, PUSHPULL);
+	setOutputType(GPIOA, 10, PUSHPULL);
+	setSpeed(GPIOA, 9, VERYHIGHSPEED);
+	setSpeed(GPIOA, 10, VERYHIGHSPEED);
+	setPullUpDown(GPIOA, 9, PULLUP);
+	setPullUpDown(GPIOA, 10, PULLUP);
+	GPIOA->AFR[1] |= 0x77 << 4;
+	
+	// Enables the USART1 peripheral clock.
+	RCC->APB1ENR1 |= RCC_APB1ENR1_USART1EN;
+	
+	// Disables the USART so the control registers can be set.
+	USART1->CR1 &= ~USART_CR1_UE;
+	
+	// Configures Control Register 1.
+	USART1->CR1 = 0;
+	USART1->CR1 |= USART_CR1_RXNEIE; 		// Enables the Receive Register Not Empty interrupt.
+	USART1->CR1 |= USART_CR1_TE;			// Enables the transmitter.
+	USART1->CR1 |= USART_CR1_RE;			// Enables the receiver.
+	
+	// Configures the Control Register 2.
+	// No bits to set in CR2.
+	
+	// Configures the Control Register 3.
+	// No bits to set the CR3.
+	
+	// Configures the baud rate.
+	USART1->BRR = 1667; // Sets a Baud rate of 9600 (assuming a clock rate of 16MHz.
+	
+	// Enables the USART.
+	USART1->CR1 |= USART_CR1_UE;
+	
+	// Enables USART3 interrupts.
+	NVIC_EnableIRQ(USART1_IRQn);
 }
 
 // Transmit a message of arbitrary length to the connected PC.
@@ -171,6 +220,12 @@ void uartSensorRequestDistance(USART_TypeDef *USARTx) {
 
 //////////////////// Private Function Bodies ///////////////////////////////////
 
+/*
+Queue not set up, USART1 should handle the volume of the tone by sending the volume to the DACManagerTask in main.c
+It should also pass the volume/distance into the SendVolumeMessage task in main.c
+I think it makes sense for volume to be highest when you're close to the sensor and lowest when you're far away
+This makes it so if you're not intentionally blocking the sensor, the tone will shut off
+*/
 void USART1_IRQHandler(void) {
 
 	static uint16_t distance = 0;
@@ -199,6 +254,14 @@ void USART1_IRQHandler(void) {
 		}
 	}
 }
+
+/*
+Queue not set up, USART3 should handle the pitch of the note by directly modifying the TIM4 ARR
+It should also pass the note/distance into the SendNoteMessage task in main.c
+High pitch equals far away, low pitch equals close. We did some sort of equation with the highest note being some 610 mm away (2 feet)
+with 20 mm increments per note. Something like | note_index = (610-SensorValue)/20 |
+
+*/
 
 void USART3_IRQHandler(void) {
 

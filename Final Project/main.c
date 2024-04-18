@@ -50,11 +50,15 @@ void DACManager_task(void *pvParameters) {
 	static uint8_t sine_index16 = 0;
 
 	while(true) {
+		//I feel akward about having to wait for a notification like this, it feels clunky
 		uint32_t notificationValue = ulTaskNotifyTake(pdTrue, NOTE_PITCH_TIMEOUT_TICKS);
 		xQueueReceiveFromISR(mailboxVolume, &volume, NOTE_PITCH_TIMEOUT_TICKS);
 
 		if(notificationValue > 0) {
 			sine_index1 = (sine_index1 + 1) % 64;
+
+			//wanted to test different frequency combinations to make a cool sound
+			
 			//sine_index2 = (sine_index2 + 2) % 64; // high frequency component of the sound
 			//sine_index4 = (sine_index4 + 4) % 64;
 			sine_index8 = (sine_index8 + 8) % 64;
@@ -111,7 +115,7 @@ void sendVolumeMessage(void *pvParameters) {
 }
 
 
-
+// Sends notification to the DACManager to move the DAC to the next SIN value
 int TIM4_IRQHandler() {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
@@ -127,11 +131,14 @@ int TIM4_IRQHandler() {
 	//TIM4->ARR = tonePitch; //transplant later :)
 }
 
+// Updates global counter
 int TIM3_IRQHandler() {
 	globalVolume = (globalVolume + 1) % 8;
 	TIM3->SR &= ~TIM_SR_UIF;
 }
 
+
+// I've barely touched main, it's mostly the same as Lab 4
 int main() {
 	
 	mailboxVolume = xQueueCreate(1, sizeof(uint8_t));
