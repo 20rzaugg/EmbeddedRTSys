@@ -16,8 +16,8 @@ const uint16_t sinLUT[] = {
 //this table assumes a 16MHz clock and a prescaler of 1(+1)
 struct notePair {
     uint16_t pitch;
-    char[4] name;
-}
+    char name[4];
+};
 
 const struct notePair note_table[] = {
     {956, "C3"},    // C3
@@ -42,7 +42,7 @@ const struct notePair note_table[] = {
     {319, "G4"},    // G4
     {301, "G#4"},   // G#4
     {284, "A4"},    // A4
-    {268, "Bb4"},   // Bb4
+    {268, "A#4"},   // Bb4
     {253, "B4"},    // B4
     {239, "C5"}     // C5
 };

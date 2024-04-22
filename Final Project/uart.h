@@ -11,17 +11,9 @@
 
 // Public global variables
 
-// Note names, in the form of chars, go in this queue.
-extern QueueHandle_t queueUartNote;
+extern QueueHandle_t mailboxVolume;
 
-// t and p go in this queue.
-extern QueueHandle_t queueUartSensorCommand;
-
-// The raw distance values received from the sensor go in this queue.
-extern QueueHandle_t queueUartSensorDistance;
-
-// The raw temperature values received from the sensor go in this queue.
-extern QueueHandle_t queueUartSensorTemperature;
+extern QueueHandle_t mailboxNote;
 
 // Public function prototypes
 
@@ -29,7 +21,8 @@ extern QueueHandle_t queueUartSensorTemperature;
 void uartPcInitialize(void);
 
 // Initialize the UART connected to the ultrasonic sensor, including any pin configuration.
-void uartSensorInitialize(void);
+void uartSensor1Initialize(void);
+void uartSensor3Initialize(void);
 
 // Transmit a message of arbitrary length to the connected PC.
 void uartPcTransmit(const char *data, int length);
@@ -38,6 +31,6 @@ void uartPcTransmit(const char *data, int length);
 void uartSensorRequestTemperature(void);
 
 // Request a distance reading from the uart sensor
-void uartSensorRequestDistance(void);
+void uartSensorRequestDistance(USART_TypeDef *USARTx);
 
 #endif

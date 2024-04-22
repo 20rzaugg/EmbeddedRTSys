@@ -9,18 +9,6 @@
 
 //////////////////// Public global variables ///////////////////////////////////
 
-// Note names, in the form of chars, go in this queue.
-QueueHandle_t queueUartNote;
-
-// t and p go in this queue.
-QueueHandle_t queueUartSensorCommand;
-
-// The raw distance values received from the sensor go in this queue.
-QueueHandle_t queueUartSensorDistance;
-
-// The raw temperature values received from the sensor go in this queue.
-QueueHandle_t queueUartSensorTemperature;
-
 //////////////////// Private function prototypes ///////////////////////////////
 
 // Interrupt handler for USART2.
@@ -43,16 +31,13 @@ typedef enum uartSensorStateEnum uartSensorState_t;
 static uartSensorState_t uart1SensorState;
 static uartSensorState_t uart3SensorState;
 
+static QueueHandle_t queuePcMessage;
+
 //////////////////// Public Function Bodies ////////////////////////////////////
 
 // Initialize the UART connected to the PC, including any pin configuration.
 void uartPcInitialize(void) {
-	
-	// Initialize the queues.
-	queuePcMessage 			= xQueueCreate(PC_MESSAGE_MAX_LENGTH, sizeof(char));
-	queueUartNote 			= xQueueCreate(1, sizeof(char));
-	queueUartSensorCommand 	= xQueueCreate(1, sizeof(char));
-
+	queuePcMessage = xQueueCreate(PC_MESSAGE_MAX_LENGTH, sizeof(char));
 	// Configure the USART2 I/O.
 	pinMode(GPIOA, 2, SPECIAL);
 	pinMode(GPIOA, 3, SPECIAL);
@@ -72,7 +57,8 @@ void uartPcInitialize(void) {
 	
 	// Configures Control Register 1.
 	USART2->CR1 = 0;
-	USART2->CR1 |= USART_CR1_RXNEIE; 		// Enables the Receive Register Not Empty interrupt.
+	//USART2->CR1 |= USART_CR1_RXNEIE; 		// Enables the Receive Register Not Empty interrupt.
+	USART2->CR1 |= USART_CR1_TXEIE;			// Enables the Transmit Register Empty interrupt.
 	USART2->CR1 |= USART_CR1_TE;			// Enables the transmitter.
 	USART2->CR1 |= USART_CR1_RE;			// Enables the receiver.
 	
@@ -95,13 +81,9 @@ void uartPcInitialize(void) {
 
 // Initialize the USART3 connected to the ultrasonic sensor, including any pin configuration.
 // TX is on PB10, RX is on PB11.
-void uartSensor1Initialize(void) {
+void uartSensor3Initialize(void) {
 
-	uartSensorState = IDLE;
-	
-	// Initialize the queues
-	queueUartSensorTemperature = xQueueCreate(1, sizeof(uint8_t));
-	queueUartSensorDistance = xQueueCreate(1, sizeof(uint16_t));
+	uart3SensorState = IDLE;
 	
 	// Configure the USART3 I/O.
 	pinMode(GPIOB, 10, SPECIAL);
@@ -144,13 +126,9 @@ void uartSensor1Initialize(void) {
 
 // Initialize the USART1 connected to the ultrasonic sensor, including any pin configuration.
 // TX is on PA9, RX is on PA10.
-void uartSensor2Initialize(void) {
+void uartSensor1Initialize(void) {
 
-	uartSensorState = IDLE;
-	
-	// Initialize the queues
-	queueUartSensorTemperature = xQueueCreate(1, sizeof(uint8_t));
-	queueUartSensorDistance = xQueueCreate(1, sizeof(uint16_t));
+	uart1SensorState = IDLE;
 	
 	// Configure the USART1 I/O.
 	pinMode(GPIOA, 9, SPECIAL);
@@ -164,7 +142,7 @@ void uartSensor2Initialize(void) {
 	GPIOA->AFR[1] |= 0x77 << 4;
 	
 	// Enables the USART1 peripheral clock.
-	RCC->APB1ENR1 |= RCC_APB1ENR1_USART1EN;
+	RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 	
 	// Disables the USART so the control registers can be set.
 	USART1->CR1 &= ~USART_CR1_UE;
@@ -229,6 +207,7 @@ This makes it so if you're not intentionally blocking the sensor, the tone will 
 void USART1_IRQHandler(void) {
 
 	static uint16_t distance = 0;
+	static uint8_t volume = 0;
 
 	// Determine the type of interrupt.
 	volatile unsigned int interrupt_status = USART1->ISR;
@@ -247,10 +226,27 @@ void USART1_IRQHandler(void) {
 			case WAITING_FOR_DISTANCE_SECOND_BYTE:
 				distance |= (uint16_t)(receivedData);
 				uart1SensorState = IDLE;
-				xQueueSendToBackFromISR(queueUartSensorDistance, &distance, NULL);
+				if (distance > 600) distance = 600; // 600 mm is 2 feet (the max distance we want to measure
+				volume = (uint8_t)((600-distance)/75);
+				xQueueSendToFrontFromISR(mailboxVolume, &volume, NULL);
 				break;
 			case IDLE:
 				return;
+		}
+	}
+}
+
+void USART2_IRQHandler(void) {
+	volatile unsigned int interrupt_status = USART2->ISR;
+	if((interrupt_status & USART_ISR_TXE) != 0) {
+		char data;
+		BaseType_t characterRemovedFromQueue;
+		characterRemovedFromQueue = xQueueReceiveFromISR(queuePcMessage, &data, NULL);
+		if (characterRemovedFromQueue == pdTRUE) {
+			USART2->TDR = data;
+		}
+		else {
+			USART2->CR1 &= ~USART_CR1_TXEIE;
 		}
 	}
 }
@@ -266,7 +262,7 @@ with 20 mm increments per note. Something like | note_index = (610-SensorValue)/
 void USART3_IRQHandler(void) {
 
 	static uint16_t distance = 0;
-
+	static uint8_t note_index = 0;
 	// Determine the type of interrupt.
 	volatile unsigned int interrupt_status = USART3->ISR;
 	
@@ -284,7 +280,9 @@ void USART3_IRQHandler(void) {
 			case WAITING_FOR_DISTANCE_SECOND_BYTE:
 				distance |= (uint16_t)(receivedData);
 				uart3SensorState = IDLE;
-				xQueueSendToBackFromISR(queueUartSensorDistance, &distance, NULL);
+				if (distance > 610) distance = 610; // 610 mm is 2 feet (the max distance we want to measure
+				note_index = (uint8_t)((610 - distance) / 20);
+				xQueueSendToFrontFromISR(mailboxNote, &note_index, NULL);
 				break;
 			case IDLE:
 				return;
