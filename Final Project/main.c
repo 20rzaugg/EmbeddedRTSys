@@ -209,8 +209,8 @@ volume_t distanceToVolume(sensorDistance_t distance) {
 }
 
 pitch_t distanceToPitch(sensorDistance_t distance) {
-	if (distance > 610) distance = 610;
-	pitch_t note_index = (pitch_t)((610 - distance) / 20);
+	if (distance > 600) distance = 600;
+	pitch_t note_index = (pitch_t)((600 - distance) / 24);
 	return note_index;
 }
 
