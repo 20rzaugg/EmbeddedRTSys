@@ -9,22 +9,134 @@
 #include "uart.h"
 
 #include <stdio.h>
+#include <stdbool.h>
 
-// Static variables
+#define PC_MESSAGE_MAX_LENGTH (64)
 
-QueueHandle_t mailboxVolume;
-QueueHandle_t mailboxNote;
+/////////////////// External Variables /////////////////////////////////////////
 
 extern const struct notePair note_table[25];
-static const uint16_t tonePitchInitial = 284;
 
-// Private function prototypes
+/////////////////// Global Variables ///////////////////////////////////////////
 
-void issueSensorCommand(void *pvParameters);
-void sendUSARTMessages(void *pvParameters);
+static uart_t uartPc = {
+	.usart 			= USART2,
+	.port 			= GPIOA,
+	.pinRx 			= 3,
+	.pinTx 			= 2,
+	.apbEnr 		=	&(RCC->APB1ENR1),
+	.apbEnrBit 	= RCC_APB1ENR1_USART2EN,
+	.irq 				= USART2_IRQn,
+	.rxEnable		= false,
+	.txEnable		= true,
+};
 
-// Private function bodies
+static uart_t uartSensorVolume = {
+	.usart 			= USART1,
+	.port 			= GPIOA,
+	.pinRx 			= 10,
+	.pinTx 			= 9,
+	.apbEnr 		=	&(RCC->APB2ENR),
+	.apbEnrBit 	= RCC_APB2ENR_USART1EN,
+	.irq 				= USART1_IRQn,
+	.rxEnable		= true,
+	.txEnable		= true,
+};
 
+static uart_t uartSensorPitch = {
+	.usart 			= USART3,
+	.port 			= GPIOB,
+	.pinRx 			= 11,
+	.pinTx 			= 10,
+	.apbEnr 		=	&(RCC->APB1ENR1),
+	.apbEnrBit 	= RCC_APB1ENR1_USART3EN,
+	.irq 				= USART3_IRQn,
+	.rxEnable		= true,
+	.txEnable		= true,
+};
+
+
+/////////////////// Shared Memory Handles //////////////////////////////////////
+
+static QueueHandle_t queuePcMessage;
+
+//QueueHandle_t mailboxVolume;
+//QueueHandle_t mailboxNote;
+
+/////////////////// Private Function Prototypes ////////////////////////////////
+
+// Transmits a message over the PC UART.
+void transmitPcMessage(const uartCharacter_t *data, int length);
+
+// A period task that polls the ultrasonic sensors. This task does not handle
+// receiving or interpreting the data.
+//void pollSensors_task(void *pvParameters);
+
+// Monitors the theremin's current volume and pitch values. When they change,
+// this task reports it to the connected computer over UART.
+//void sendUSARTMessages_task(void *pvParameters);
+
+// The PC UART interrupt handler. Responsible for transmitting the next
+// character in the message queue.
+void USART2_IRQHandler(void);
+
+// The timer interrupt. Runs every time Timer4 times out. Responsible for
+// selecting the new value to output to the DAC in order to generate a tone of
+// the appropriate pitch and volume.
+//void TIM4_IRQHandler(void);
+
+/////////////////// Public Function Bodies /////////////////////////////////////
+
+int main() {
+	
+	useHSI();
+	
+	// Create mailboxes
+	//mailboxVolume = xQueueCreate(1, sizeof(volume_t));
+	//mailboxNote = xQueueCreate(1, sizeof(uint8_t));
+	
+	queuePcMessage = xQueueCreate(PC_MESSAGE_MAX_LENGTH, sizeof(uartCharacter_t));
+
+	// Initialize peripherals
+	uartInitialize(&uartPc);
+	//uartPcInitialize();
+	//uartSensor1Initialize();
+	//uartSensor3Initialize();
+	
+	// Start Timer4
+	//enableTimer(TIM4, 1, 70, UPCOUNT, 1);
+	//TIM4->CR1 |= TIM_CR1_ARPE;
+
+	// Initialize DAC
+	//DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
+
+	// Start tasks
+	/*
+	BaseType_t t1 = xTaskCreate(pollSensors_task, "pollSensors", 256, NULL, 1, NULL);
+	if (t1 != pdPASS) {
+		while(1);
+	}
+	*/
+	
+	/*
+	BaseType_t t2 = xTaskCreate(sendUSARTMessages_task, "sendUSART", 256, NULL, 1, NULL);
+	if (t2 != pdPASS) {
+		while(1);
+	}
+	*/
+	
+	// Send hello world message
+	uartCharacter_t *helloWorld = "Hello World.\n\r";
+	transmitPcMessage(helloWorld, 15);
+	
+	//vTaskStartScheduler();
+	
+	while(1);
+}
+
+/////////////////// Private Function Bodies ////////////////////////////////////
+
+/*
 void pollSensors_task(void *pvParameters) {
 	while(1) {
 		uartSensorRequestDistance(USART3);
@@ -35,33 +147,66 @@ void pollSensors_task(void *pvParameters) {
 
 void sendUSARTMessages_task(void *pvParameters) {
 	static uint8_t note_index = 0;
-	static uint8_t volume = 0;
+	static volume_t volume = 0;
 	static uint8_t new_note_index;
-	static uint8_t new_volume;
+	static volume_t new_volume;
 	static char* noteformat = "%s\n\r";
 	static char* volformat = "Vol %u\n\r";
 	static char message[PC_MESSAGE_MAX_LENGTH];
 
 	while(1) {
-		xQueuePeek(mailboxNote, &new_note_index, portMAX_DELAY);
+		//xQueuePeek(mailboxNote, &new_note_index, portMAX_DELAY);
 
-		if(new_note_index != note_index) {
+		if (new_note_index != note_index) {
 			note_index = new_note_index;
 			int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, noteformat, note_table[note_index].name);
 			uartPcTransmit(message, messageLength);
 		}
+		
 		xQueuePeek(mailboxVolume, &new_volume, portMAX_DELAY);
-
-		if(new_volume != volume) {
+		if (new_volume != volume) {
 			volume = new_volume;
 			int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, volformat, volume);
 			uartPcTransmit(message, messageLength);
 		}
+		
+		vTaskDelay(200);
+	}
+}
+*/
+
+void transmitPcMessage(const uartCharacter_t *data, int length) {
+
+	BaseType_t characterAddedToQueue;
+	int i;
+	for (i = 0; i < length; i++) {
+		characterAddedToQueue = xQueueSendToBack(queuePcMessage, data + i, 0);
+		if (characterAddedToQueue != pdTRUE) {
+			break;
+		}
+	}
+	// Enable the interrupt.
+	uartPc.usart->CR1 |= USART_CR1_TXEIE;
+
+}
+
+void USART2_IRQHandler(void) {
+	volatile unsigned int interruptStatus = uartPc.usart->ISR;
+	if ((interruptStatus & USART_ISR_TXE) != 0) {
+		uartCharacter_t data;
+		BaseType_t characterRemovedFromQueue;
+		characterRemovedFromQueue = xQueueReceiveFromISR(queuePcMessage, &data, NULL);
+		if (characterRemovedFromQueue == pdTRUE) {
+			uartTransmitCharacter(&uartPc, data);
+		} else {
+			uartPc.usart->CR1 &= ~USART_CR1_TXEIE;
+		}
 	}
 }
 
+/*
 // Sends notification to the DACManager to move the DAC to the next SIN value
-void TIM4_IRQHandler() {
+void TIM4_IRQHandler(void) {
 	
 	static uint8_t note_index = 0;
 	static uint8_t volume = 0;
@@ -92,39 +237,4 @@ void TIM4_IRQHandler() {
 	
 	TIM4->SR &= ~TIM_SR_UIF;
 }
-
-// I've barely touched main, it's mostly the same as Lab 4
-int main() {
-	
-	useHSI();
-	
-	mailboxVolume = xQueueCreate(1, sizeof(uint8_t));
-	mailboxNote = xQueueCreate(1, sizeof(uint8_t));
-
-	uartPcInitialize();
-	uartSensor1Initialize();
-	uartSensor3Initialize();
-	
-	enableTimer(TIM4, 1, 70, UPCOUNT, 1);
-	TIM4->CR1 |= TIM_CR1_ARPE;
-
-	DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
-
-	BaseType_t t1 = xTaskCreate(pollSensors_task, "pollSensors", 256, NULL, 1, NULL);
-	if (t1 != pdPASS) {
-		while(1);
-	}
-	BaseType_t t2 = xTaskCreate(sendUSARTMessages_task, "sendUSART", 256, NULL, 1, NULL);
-	if (t2 != pdPASS) {
-		while(1);
-	}
-	
-	char *helloWorld = "Hello World.\n\r";
-	uartPcTransmit(helloWorld, 15);
-	
-	vTaskStartScheduler();
-	
-	while(1);
-}
-
-
+*/

@@ -28,6 +28,8 @@ void setPullUpDown(GPIO_TypeDef *port, unsigned int pin, unsigned int pupd);
 
 void setSpeed(GPIO_TypeDef *port, unsigned int pin, unsigned int speed);
 
+void setAlternateFunction(GPIO_TypeDef *port, unsigned int pin, unsigned int alternateFunction);
+
 void digitalWrite(GPIO_TypeDef *port, unsigned int pin, unsigned int value);
 
 int digitalRead(GPIO_TypeDef *port, unsigned int pin);

@@ -7,106 +7,54 @@
 #define UART_SENSOR_COMMAND_TEMPERATURE 0x50
 #define UART_SENSOR_COMMAND_DISTANCE 0x55
 
-//////////////////// Public global variables ///////////////////////////////////
-
 //////////////////// Private function prototypes ///////////////////////////////
 
-// Interrupt handler for USART2.
+// Interrupt handler for USART1.
 void USART1_IRQHandler(void);
 
 // Interrupt handler for USART3.
 void USART3_IRQHandler(void);
+
+//////////////////// Private types /////////////////////////////////////////////
 
 //////////////////// Private global variables //////////////////////////////////
 
 // A queue that contains all the chars to transmit to the PC
 static QueueHandle_t queuePcMessage;
 
-enum uartSensorStateEnum {
-	IDLE,
-	WAITING_FOR_DISTANCE_FIRST_BYTE,
-	WAITING_FOR_DISTANCE_SECOND_BYTE
-};
-typedef enum uartSensorStateEnum uartSensorState_t;
-static uartSensorState_t uart1SensorState;
-static uartSensorState_t uart3SensorState;
-
 static QueueHandle_t queuePcMessage;
 
 //////////////////// Public Function Bodies ////////////////////////////////////
 
-// Initialize the UART connected to the PC, including any pin configuration.
-void uartPcInitialize(void) {
-	queuePcMessage = xQueueCreate(PC_MESSAGE_MAX_LENGTH, sizeof(char));
-	// Configure the USART2 I/O.
-	pinMode(GPIOA, 2, SPECIAL);
-	pinMode(GPIOA, 3, SPECIAL);
-	setOutputType(GPIOA, 2, PUSHPULL);
-	setOutputType(GPIOA, 3, PUSHPULL);
-	setSpeed(GPIOA, 2, VERYHIGHSPEED);
-	setSpeed(GPIOA, 3, VERYHIGHSPEED);
-	setPullUpDown(GPIOA, 2, PULLUP);
-	setPullUpDown(GPIOA, 3, PULLUP);
-	GPIOA->AFR[0] |= 0x77 << 8;
+void uartInitialize(uart_t *uart) {
 	
-	// Enables the USART2 peripheral clock.
-	RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
+	pinMode(uart->port, uart->pinRx, SPECIAL);
+	pinMode(uart->port, uart->pinTx, SPECIAL);
+	setOutputType(uart->port, uart->pinRx, PUSHPULL);
+	setOutputType(uart->port, uart->pinTx, PUSHPULL);
+	setSpeed(uart->port, uart->pinRx, VERYHIGHSPEED);
+	setSpeed(uart->port, uart->pinTx, VERYHIGHSPEED);
+	setPullUpDown(uart->port, uart->pinRx, PULLUP);
+	setPullUpDown(uart->port, uart->pinTx, PULLUP);
+	setAlternateFunction(uart->port, uart->pinRx, 0x7u);
+	setAlternateFunction(uart->port, uart->pinTx, 0x7u);
 	
-	// Disables the USART so the control registers can be set.
-	USART2->CR1 &= ~USART_CR1_UE;
-	
-	// Configures Control Register 1.
-	USART2->CR1 = 0;
-	//USART2->CR1 |= USART_CR1_RXNEIE; 		// Enables the Receive Register Not Empty interrupt.
-	USART2->CR1 |= USART_CR1_TXEIE;			// Enables the Transmit Register Empty interrupt.
-	USART2->CR1 |= USART_CR1_TE;			// Enables the transmitter.
-	USART2->CR1 |= USART_CR1_RE;			// Enables the receiver.
-	
-	// Configures the Control Register 2.
-	// No bits to set in CR2.
-	
-	// Configures the Control Register 3.
-	// Not bits to set the CR3.
-	
-	// Configures the baud rate.
-	USART2->BRR = 1667; // Sets a Baud rate of 9600 (assuming a clock rate of 16MHz.
-	
-	// Enables the USART.
-	USART2->CR1 |= USART_CR1_UE;
-	
-	// Enables USART2 interrupts.
-	NVIC_EnableIRQ(USART2_IRQn);
-
-}
-
-// Initialize the USART3 connected to the ultrasonic sensor, including any pin configuration.
-// TX is on PB10, RX is on PB11.
-void uartSensor3Initialize(void) {
-
-	uart3SensorState = IDLE;
-	
-	// Configure the USART3 I/O.
-	pinMode(GPIOB, 10, SPECIAL);
-	pinMode(GPIOB, 11, SPECIAL);
-	setOutputType(GPIOB, 10, PUSHPULL);
-	setOutputType(GPIOB, 11, PUSHPULL);
-	setSpeed(GPIOB, 10, VERYHIGHSPEED);
-	setSpeed(GPIOB, 11, VERYHIGHSPEED);
-	setPullUpDown(GPIOB, 10, PULLUP);
-	setPullUpDown(GPIOB, 11, PULLUP);
-	GPIOB->AFR[1] |= 0x77 << 8;
-	
-	// Enables the USART3 peripheral clock.
-	RCC->APB1ENR1 |= RCC_APB1ENR1_USART3EN;
+	// Enables the USART's peripheral clock.
+	*(uart->apbEnr) |= uart->apbEnrBit;
 	
 	// Disables the USART so the control registers can be set.
-	USART3->CR1 &= ~USART_CR1_UE;
+	uart->usart->CR1 &= ~USART_CR1_UE;
 	
 	// Configures Control Register 1.
-	USART3->CR1 = 0;
-	USART3->CR1 |= USART_CR1_RXNEIE; 	// Enables the Receive Register Not Empty interrupt.
-	USART3->CR1 |= USART_CR1_TE;			// Enables the transmitter.
-	USART3->CR1 |= USART_CR1_RE;			// Enables the receiver.
+	uart->usart->CR1 = 0;
+	if (uart->rxEnable) {
+		//uart->usart->CR1 |= USART_CR1_RXNEIE;
+		uart->usart->CR1 |= USART_CR1_RE;
+	}
+	if (uart->txEnable) {
+		//uart->usart->CR1 |= USART_CR1_TXEIE;
+		uart->usart->CR1 |= USART_CR1_TE;
+	}
 	
 	// Configures the Control Register 2.
 	// No bits to set in CR2.
@@ -115,60 +63,23 @@ void uartSensor3Initialize(void) {
 	// No bits to set the CR3.
 	
 	// Configures the baud rate.
-	USART3->BRR = 1667; // Sets a Baud rate of 9600 (assuming a clock rate of 16MHz.
+	uart->usart->BRR = 1667; // Sets a Baud rate of 9600 (assuming a clock rate of 16MHz.
 	
 	// Enables the USART.
-	USART3->CR1 |= USART_CR1_UE;
+	uart->usart->CR1 |= USART_CR1_UE;
 	
-	// Enables USART3 interrupts.
-	NVIC_EnableIRQ(USART3_IRQn);
+	// Enables USART interrupts.
+	if (uart->rxEnable || uart->txEnable) {
+		NVIC_EnableIRQ(uart->irq);
+	}
+	
 }
 
-// Initialize the USART1 connected to the ultrasonic sensor, including any pin configuration.
-// TX is on PA9, RX is on PA10.
-void uartSensor1Initialize(void) {
-
-	uart1SensorState = IDLE;
-	
-	// Configure the USART1 I/O.
-	pinMode(GPIOA, 9, SPECIAL);
-	pinMode(GPIOA, 10, SPECIAL);
-	setOutputType(GPIOA, 9, PUSHPULL);
-	setOutputType(GPIOA, 10, PUSHPULL);
-	setSpeed(GPIOA, 9, VERYHIGHSPEED);
-	setSpeed(GPIOA, 10, VERYHIGHSPEED);
-	setPullUpDown(GPIOA, 9, PULLUP);
-	setPullUpDown(GPIOA, 10, PULLUP);
-	GPIOA->AFR[1] |= 0x77 << 4;
-	
-	// Enables the USART1 peripheral clock.
-	RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
-	
-	// Disables the USART so the control registers can be set.
-	USART1->CR1 &= ~USART_CR1_UE;
-	
-	// Configures Control Register 1.
-	USART1->CR1 = 0;
-	USART1->CR1 |= USART_CR1_RXNEIE; 		// Enables the Receive Register Not Empty interrupt.
-	USART1->CR1 |= USART_CR1_TE;			// Enables the transmitter.
-	USART1->CR1 |= USART_CR1_RE;			// Enables the receiver.
-	
-	// Configures the Control Register 2.
-	// No bits to set in CR2.
-	
-	// Configures the Control Register 3.
-	// No bits to set the CR3.
-	
-	// Configures the baud rate.
-	USART1->BRR = 1667; // Sets a Baud rate of 9600 (assuming a clock rate of 16MHz.
-	
-	// Enables the USART.
-	USART1->CR1 |= USART_CR1_UE;
-	
-	// Enables USART3 interrupts.
-	NVIC_EnableIRQ(USART1_IRQn);
+void uartTransmitCharacter(uart_t *uart, uartCharacter_t character) {
+	uart->usart->TDR = character;
 }
 
+/*
 // Transmit a message of arbitrary length to the connected PC.
 void uartPcTransmit(const char *data, int length) {
 
@@ -184,7 +95,9 @@ void uartPcTransmit(const char *data, int length) {
 	USART2->CR1 |= USART_CR1_TXEIE;
 	
 }
+*/
 
+/*
 // Request a distance reading from the uart sensor
 void uartSensorRequestDistance(USART_TypeDef *USARTx) {
 	if (USARTx == USART1) {
@@ -195,6 +108,7 @@ void uartSensorRequestDistance(USART_TypeDef *USARTx) {
 	}
 	USARTx->TDR = UART_SENSOR_COMMAND_DISTANCE;
 }
+*/
 
 //////////////////// Private Function Bodies ///////////////////////////////////
 
@@ -204,10 +118,11 @@ It should also pass the volume/distance into the SendVolumeMessage task in main.
 I think it makes sense for volume to be highest when you're close to the sensor and lowest when you're far away
 This makes it so if you're not intentionally blocking the sensor, the tone will shut off
 */
+/*
 void USART1_IRQHandler(void) {
 
-	static uint16_t distance = 0;
-	static uint8_t volume = 0;
+	static sensorDistance_t distance = 0;
+	static volume_t volume = 0;
 
 	// Determine the type of interrupt.
 	volatile unsigned int interrupt_status = USART1->ISR;
@@ -220,15 +135,15 @@ void USART1_IRQHandler(void) {
 		
 		switch (uart1SensorState) {
 			case WAITING_FOR_DISTANCE_FIRST_BYTE:
-				distance = (uint16_t)(receivedData << 8);
+				distance = (sensorDistance_t)(receivedData << 8);
 				uart1SensorState = WAITING_FOR_DISTANCE_SECOND_BYTE;
 				break;
 			case WAITING_FOR_DISTANCE_SECOND_BYTE:
-				distance |= (uint16_t)(receivedData);
+				distance |= (sensorDistance_t)(receivedData);
 				uart1SensorState = IDLE;
 				if (distance > 600) distance = 600; // 600 mm is 2 feet (the max distance we want to measure
-				volume = (uint8_t)((600-distance)/75);
-				xQueueSendToFrontFromISR(mailboxVolume, &volume, NULL);
+				volume = (volume_t)((600-distance)/75);
+				xQueueOverwriteFromISR(mailboxVolume, &volume, NULL);
 				break;
 			case IDLE:
 				return;
@@ -250,6 +165,7 @@ void USART2_IRQHandler(void) {
 		}
 	}
 }
+*/
 
 /*
 Queue not set up, USART3 should handle the pitch of the note by directly modifying the TIM4 ARR
@@ -259,6 +175,7 @@ with 20 mm increments per note. Something like | note_index = (610-SensorValue)/
 
 */
 
+/*
 void USART3_IRQHandler(void) {
 
 	static uint16_t distance = 0;
@@ -289,3 +206,4 @@ void USART3_IRQHandler(void) {
 		}
 	}
 }
+*/

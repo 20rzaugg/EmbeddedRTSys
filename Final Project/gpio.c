@@ -30,6 +30,14 @@ void setSpeed(GPIO_TypeDef *port, unsigned int pin, unsigned int speed) {
 	port->OSPEEDR = (port->OSPEEDR & ~(0x3u << (pin * 2))) | (speed << (pin * 2));
 }
 
+void setAlternateFunction(GPIO_TypeDef *port, unsigned int pin, unsigned int alternateFunction) {
+	if (pin < 8) {
+		port->AFR[0] |= (alternateFunction & 0xFu) << (pin * 4);
+	} else {
+		port->AFR[1] |= (alternateFunction & 0xFu) << ((pin - 8) * 4);
+	}
+}
+
 void digitalWrite(GPIO_TypeDef *port, unsigned int pin, unsigned int value) {
     port->ODR = (port->ODR & ~(0x3u << pin)) | (value << pin);
 }
