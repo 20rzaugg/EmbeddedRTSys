@@ -18,6 +18,8 @@
 
 typedef uint8_t volume_t;
 
+typedef uint32_t pitch_t;
+
 /////////////////// External Variables /////////////////////////////////////////
 
 extern const struct notePair note_table[25];
@@ -60,6 +62,7 @@ static uart_t uartSensorPitch = {
 	.rxEnable		= true,
 	.txEnable		= true,
 };
+static sensor_t sensorPitch;
 
 
 /////////////////// Shared Memory Handles //////////////////////////////////////
@@ -78,6 +81,12 @@ void sendUartMessages_task(void *pvParameters);
 
 /////////////////// Private Function Prototypes ////////////////////////////////
 
+// Calculates the tone's volume from a distance.
+volume_t distanceToVolume(sensorDistance_t distance);
+
+// Calculates the tone's pitch from a distance.
+pitch_t distanceToPitch(sensorDistance_t distance);
+
 // Transmits a message over the PC UART.
 void transmitPcMessage(const uartCharacter_t *data, int length);
 
@@ -87,10 +96,12 @@ void USART2_IRQHandler(void);
 
 void USART1_IRQHandler(void);
 
+void USART3_IRQHandler(void);
+
 // The timer interrupt. Runs every time Timer4 times out. Responsible for
 // selecting the new value to output to the DAC in order to generate a tone of
 // the appropriate pitch and volume.
-//void TIM4_IRQHandler(void);
+void TIM4_IRQHandler(void);
 
 /////////////////// Public Function Bodies /////////////////////////////////////
 
@@ -110,13 +121,15 @@ int main() {
 	sensorVolume.uart = uartSensorVolume;
 	sensorInitialize(&sensorVolume);
 	
+	sensorPitch.uart = uartSensorPitch;
+	sensorInitialize(&sensorPitch);
 	
 	// Start Timer4
-	//enableTimer(TIM4, 1, 70, UPCOUNT, 1);
-	//TIM4->CR1 |= TIM_CR1_ARPE;
+	enableTimer(TIM4, 1, 70, UPCOUNT, 1);
+	TIM4->CR1 |= TIM_CR1_ARPE;
 
 	// Initialize DAC
-	//DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
+	DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
 
 	// Start tasks
 	BaseType_t t1 = xTaskCreate(pollSensors_task, "pollSensors", 256, NULL, 1, NULL);
@@ -124,7 +137,7 @@ int main() {
 		while(1);
 	}
 	
-	BaseType_t t2 = xTaskCreate(sendUartMessages_task, "sendUSART", 256, NULL, 1, NULL);
+	BaseType_t t2 = xTaskCreate(sendUartMessages_task, "sendUART", 256, NULL, 1, NULL);
 	if (t2 != pdPASS) {
 		while(1);
 	}
@@ -145,32 +158,38 @@ int main() {
 void pollSensors_task(void *pvParameters) {
 	while(1) {
 		sensorRequestDistance(&sensorVolume);
-		// sensorRequestDistance(&sensorPitch);
+		sensorRequestDistance(&sensorPitch);
 		vTaskDelay(200);
 	}
 }
 
 void sendUartMessages_task(void *pvParameters) {
-	static uint8_t note_index = 0;
+	static pitch_t 	note_index = 0;
 	static volume_t volume = 0;
-	static uint8_t new_note_index;
+	static pitch_t 	new_note_index;
 	static volume_t new_volume;
+	
 	static char* noteformat = "%s\n\r";
 	static char* volformat = "Vol %u\n\r";
+	
 	static char message[PC_MESSAGE_MAX_LENGTH];
 
 	while(1) {
-		//xQueuePeek(mailboxNote, &new_note_index, portMAX_DELAY);
+		
+		sensorDistance_t distancePitch;
+		xQueuePeek(sensorPitch.mailboxDistance, &distancePitch, 0);
+		new_note_index = distanceToPitch(distancePitch);
 
-		/*
 		if (new_note_index != note_index) {
 			note_index = new_note_index;
 			int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, noteformat, note_table[note_index].name);
-			uartPcTransmit(message, messageLength);
+			transmitPcMessage(message, messageLength);
 		}
-		*/
 		
-		xQueuePeek(sensorVolume.mailboxDistance, &new_volume, portMAX_DELAY);
+		sensorDistance_t distanceVolume;
+		xQueuePeek(sensorVolume.mailboxDistance, &distanceVolume, 0);
+		new_volume = distanceToVolume(distanceVolume);
+		
 		if (new_volume != volume) {
 			volume = new_volume;
 			int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, volformat, volume);
@@ -182,6 +201,18 @@ void sendUartMessages_task(void *pvParameters) {
 }
 
 /////////////////// Private Function Bodies ////////////////////////////////////
+
+volume_t distanceToVolume(sensorDistance_t distance) {
+	if (distance > 600) distance = 600; // 600 mm is 2 feet (the max distance we want to measure).
+	volume_t volume = (volume_t)((600 - distance) / 75);
+	return volume;
+}
+
+pitch_t distanceToPitch(sensorDistance_t distance) {
+	if (distance > 610) distance = 610;
+	pitch_t note_index = (pitch_t)((610 - distance) / 20);
+	return note_index;
+}
 
 void transmitPcMessage(const uartCharacter_t *data, int length) {
 
@@ -213,31 +244,45 @@ void USART2_IRQHandler(void) {
 }
 
 void USART1_IRQHandler(void) {
-
-	// Determine the type of interrupt.
 	volatile unsigned int interrupt_status = USART1->ISR;
 	if ((interrupt_status & USART_ISR_RXNE) != 0) {
 		sensorReceiveCharacter(&sensorVolume);
 	}
-	
 }
 
-/*
+void USART3_IRQHandler(void) {
+	volatile unsigned int interrupt_status = USART3->ISR;
+	if ((interrupt_status & USART_ISR_RXNE) != 0) {
+		sensorReceiveCharacter(&sensorPitch);
+	}
+}
+
 // Sends notification to the DACManager to move the DAC to the next SIN value
 void TIM4_IRQHandler(void) {
 	
-	static uint8_t note_index = 0;
-	static uint8_t volume = 0;
+	static pitch_t 	note_index = 0;
+	static volume_t volume = 0;
 	
 	static uint8_t sine_index1 = 0;
 	//static uint8_t sine_index2 = 0;
 	//static uint8_t sine_index4 = 0;
 	static uint8_t sine_index8 = 0;
 	static uint8_t sine_index16 = 0;
-	uartSensorRequestDistance(USART3);
-	uartSensorRequestDistance(USART1);
-	xQueuePeekFromISR(mailboxNote, &note_index);
-	xQueuePeekFromISR(mailboxVolume, &volume);
+	
+	// Decide whether we request these here on in the pollSensors task. I would
+	// recommend in the task, since I think the timer runs too fast.
+	//uartSensorRequestDistance(USART3);
+	//uartSensorRequestDistance(USART1);
+	
+	//xQueuePeekFromISR(mailboxNote, &note_index);
+	
+	sensorDistance_t distancePitch;
+	xQueuePeekFromISR(sensorPitch.mailboxDistance, &distancePitch);
+	note_index = distanceToPitch(distancePitch);
+	
+	sensorDistance_t distanceVolume;
+	xQueuePeekFromISR(sensorVolume.mailboxDistance, &distanceVolume);
+	volume = distanceToVolume(distanceVolume);
 
 	sine_index1 = (sine_index1 + 1) % 64;
 
@@ -255,4 +300,3 @@ void TIM4_IRQHandler(void) {
 	
 	TIM4->SR &= ~TIM_SR_UIF;
 }
-*/

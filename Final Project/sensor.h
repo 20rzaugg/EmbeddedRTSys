@@ -17,7 +17,7 @@ enum sensorStateEnum {
 };
 typedef enum sensorStateEnum sensorState_t;
 
-typedef uint8_t sensorDistance_t;
+typedef uint16_t sensorDistance_t;
 
 // A struct used to organize all the information related to a particular sensor.
 struct sensorStruct {
