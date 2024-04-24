@@ -433,6 +433,16 @@
               <FileType>5</FileType>
               <FilePath>.\tim.h</FilePath>
             </File>
+            <File>
+              <FileName>sensor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\sensor.h</FilePath>
+            </File>
+            <File>
+              <FileName>sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sensor.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

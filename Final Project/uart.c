@@ -4,9 +4,6 @@
 #include "uart.h"
 #include "gpio.h"
 
-#define UART_SENSOR_COMMAND_TEMPERATURE 0x50
-#define UART_SENSOR_COMMAND_DISTANCE 0x55
-
 //////////////////// Private function prototypes ///////////////////////////////
 
 // Interrupt handler for USART1.

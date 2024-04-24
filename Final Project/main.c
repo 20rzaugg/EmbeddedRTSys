@@ -7,11 +7,16 @@
 #include "stddef.h" //NULL
 #include "queue.h"
 #include "uart.h"
+#include "sensor.h"
 
 #include <stdio.h>
 #include <stdbool.h>
 
 #define PC_MESSAGE_MAX_LENGTH (64)
+
+/////////////////// Types //////////////////////////////////////////////////////
+
+typedef uint8_t volume_t;
 
 /////////////////// External Variables /////////////////////////////////////////
 
@@ -42,6 +47,7 @@ static uart_t uartSensorVolume = {
 	.rxEnable		= true,
 	.txEnable		= true,
 };
+static sensor_t sensorVolume;
 
 static uart_t uartSensorPitch = {
 	.usart 			= USART3,
@@ -60,25 +66,26 @@ static uart_t uartSensorPitch = {
 
 static QueueHandle_t queuePcMessage;
 
-//QueueHandle_t mailboxVolume;
-//QueueHandle_t mailboxNote;
+/////////////////// Task Prototypes ////////////////////////////////////////////
+
+// A period task that polls the ultrasonic sensors. This task does not handle
+// receiving or interpreting the data.
+void pollSensors_task(void *pvParameters);
+
+// Monitors the theremin's current volume and pitch values. When they change,
+// this task reports it to the connected computer over UART.
+void sendUartMessages_task(void *pvParameters);
 
 /////////////////// Private Function Prototypes ////////////////////////////////
 
 // Transmits a message over the PC UART.
 void transmitPcMessage(const uartCharacter_t *data, int length);
 
-// A period task that polls the ultrasonic sensors. This task does not handle
-// receiving or interpreting the data.
-//void pollSensors_task(void *pvParameters);
-
-// Monitors the theremin's current volume and pitch values. When they change,
-// this task reports it to the connected computer over UART.
-//void sendUSARTMessages_task(void *pvParameters);
-
 // The PC UART interrupt handler. Responsible for transmitting the next
 // character in the message queue.
 void USART2_IRQHandler(void);
+
+void USART1_IRQHandler(void);
 
 // The timer interrupt. Runs every time Timer4 times out. Responsible for
 // selecting the new value to output to the DAC in order to generate a tone of
@@ -99,9 +106,10 @@ int main() {
 
 	// Initialize peripherals
 	uartInitialize(&uartPc);
-	//uartPcInitialize();
-	//uartSensor1Initialize();
-	//uartSensor3Initialize();
+	
+	sensorVolume.uart = uartSensorVolume;
+	sensorInitialize(&sensorVolume);
+	
 	
 	// Start Timer4
 	//enableTimer(TIM4, 1, 70, UPCOUNT, 1);
@@ -111,41 +119,38 @@ int main() {
 	//DACinit_ch1(DAC_NORMAL_BUFFER_EXTERNAL, DAC_TRIGGER_NONE);
 
 	// Start tasks
-	/*
 	BaseType_t t1 = xTaskCreate(pollSensors_task, "pollSensors", 256, NULL, 1, NULL);
 	if (t1 != pdPASS) {
 		while(1);
 	}
-	*/
 	
-	/*
-	BaseType_t t2 = xTaskCreate(sendUSARTMessages_task, "sendUSART", 256, NULL, 1, NULL);
+	BaseType_t t2 = xTaskCreate(sendUartMessages_task, "sendUSART", 256, NULL, 1, NULL);
 	if (t2 != pdPASS) {
 		while(1);
 	}
-	*/
 	
 	// Send hello world message
 	uartCharacter_t *helloWorld = "Hello World.\n\r";
 	transmitPcMessage(helloWorld, 15);
 	
-	//vTaskStartScheduler();
+	sensorRequestDistance(&sensorVolume);
+	
+	vTaskStartScheduler();
 	
 	while(1);
 }
 
-/////////////////// Private Function Bodies ////////////////////////////////////
+/////////////////// Task Bodies ////////////////////////////////////////////////
 
-/*
 void pollSensors_task(void *pvParameters) {
 	while(1) {
-		uartSensorRequestDistance(USART3);
-		uartSensorRequestDistance(USART1);
+		sensorRequestDistance(&sensorVolume);
+		// sensorRequestDistance(&sensorPitch);
 		vTaskDelay(200);
 	}
 }
 
-void sendUSARTMessages_task(void *pvParameters) {
+void sendUartMessages_task(void *pvParameters) {
 	static uint8_t note_index = 0;
 	static volume_t volume = 0;
 	static uint8_t new_note_index;
@@ -157,23 +162,26 @@ void sendUSARTMessages_task(void *pvParameters) {
 	while(1) {
 		//xQueuePeek(mailboxNote, &new_note_index, portMAX_DELAY);
 
+		/*
 		if (new_note_index != note_index) {
 			note_index = new_note_index;
 			int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, noteformat, note_table[note_index].name);
 			uartPcTransmit(message, messageLength);
 		}
+		*/
 		
-		xQueuePeek(mailboxVolume, &new_volume, portMAX_DELAY);
+		xQueuePeek(sensorVolume.mailboxDistance, &new_volume, portMAX_DELAY);
 		if (new_volume != volume) {
 			volume = new_volume;
 			int messageLength = snprintf(message, PC_MESSAGE_MAX_LENGTH, volformat, volume);
-			uartPcTransmit(message, messageLength);
+			transmitPcMessage(message, messageLength);
 		}
 		
 		vTaskDelay(200);
 	}
 }
-*/
+
+/////////////////// Private Function Bodies ////////////////////////////////////
 
 void transmitPcMessage(const uartCharacter_t *data, int length) {
 
@@ -202,6 +210,16 @@ void USART2_IRQHandler(void) {
 			uartPc.usart->CR1 &= ~USART_CR1_TXEIE;
 		}
 	}
+}
+
+void USART1_IRQHandler(void) {
+
+	// Determine the type of interrupt.
+	volatile unsigned int interrupt_status = USART1->ISR;
+	if ((interrupt_status & USART_ISR_RXNE) != 0) {
+		sensorReceiveCharacter(&sensorVolume);
+	}
+	
 }
 
 /*
