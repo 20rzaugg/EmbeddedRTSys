@@ -159,7 +159,7 @@ void pollSensors_task(void *pvParameters) {
 	while(1) {
 		sensorRequestDistance(&sensorVolume);
 		sensorRequestDistance(&sensorPitch);
-		vTaskDelay(200);
+		vTaskDelay(50);
 	}
 }
 
@@ -209,8 +209,8 @@ volume_t distanceToVolume(sensorDistance_t distance) {
 }
 
 pitch_t distanceToPitch(sensorDistance_t distance) {
-	if (distance > 600) distance = 600;
-	pitch_t note_index = (pitch_t)((600 - distance) / 24);
+	if (distance > 800) distance = 800;
+	pitch_t note_index = (pitch_t)(distance / 32);
 	return note_index;
 }
 
@@ -269,13 +269,6 @@ void TIM4_IRQHandler(void) {
 	static uint8_t sine_index8 = 0;
 	static uint8_t sine_index16 = 0;
 	
-	// Decide whether we request these here on in the pollSensors task. I would
-	// recommend in the task, since I think the timer runs too fast.
-	//uartSensorRequestDistance(USART3);
-	//uartSensorRequestDistance(USART1);
-	
-	//xQueuePeekFromISR(mailboxNote, &note_index);
-	
 	sensorDistance_t distancePitch;
 	xQueuePeekFromISR(sensorPitch.mailboxDistance, &distancePitch);
 	note_index = distanceToPitch(distancePitch);
@@ -284,7 +277,7 @@ void TIM4_IRQHandler(void) {
 	xQueuePeekFromISR(sensorVolume.mailboxDistance, &distanceVolume);
 	volume = distanceToVolume(distanceVolume);
 
-	sine_index1 = (sine_index1 + 1) % 64;
+	sine_index1 = (sine_index1 + 2) % 64;
 
 	//wanted to test different frequency combinations to make a cool sound
 	
